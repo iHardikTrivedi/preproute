@@ -1,11 +1,17 @@
+import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import storage from "@/utils/storage";
-import { useCallback } from "react";
-import { clearAuth, setAuth } from "../../auth/store/authSlice";
+
+import { ROUTES } from "@/app/router/routes";
+import { clearAuth, setAuth } from "../store/authSlice";
 import type { LoginResponse } from "../types/auth.types";
 
 export const useAuth = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const auth = useAppSelector((state) => state.auth);
 
   const login = useCallback(
@@ -15,24 +21,27 @@ export const useAuth = () => {
       storage.setUser(data.user);
 
       dispatch(setAuth(data));
+
+      navigate(ROUTES.DASHBOARD, {
+        replace: true,
+      });
     },
-    [dispatch],
+    [dispatch, navigate],
   );
 
   const logout = useCallback(() => {
     storage.clear();
 
     dispatch(clearAuth());
-  }, [dispatch]);
+
+    navigate(ROUTES.LOGIN, {
+      replace: true,
+    });
+  }, [dispatch, navigate]);
 
   return {
     ...auth,
     login,
     logout,
-
-    isAuthenticated: auth.isAuthenticated,
-    user: auth.user,
-    accessToken: auth.accessToken,
-    refreshToken: auth.refreshToken,
   };
 };

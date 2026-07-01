@@ -40,9 +40,3 @@ export interface RefreshTokenResponse {
 export interface ForgotPasswordRequest {
   userId: string;
 }
-
-export interface ApiErrorResponse {
-  statusCode: number;
-  message: string;
-  errors?: Record<string, string[]>;
-}

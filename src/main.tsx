@@ -1,3 +1,4 @@
+import { SnackbarProvider } from "notistack";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
@@ -20,9 +21,18 @@ createRoot(document.getElementById("root")!).render(
       <ThemeProvider>
         <ReduxProvider>
           <QueryProvider>
-            <AuthProvider>
-              <App />
-            </AuthProvider>
+            <SnackbarProvider
+              maxSnack={3}
+              autoHideDuration={3000}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <AuthProvider>
+                <App />
+              </AuthProvider>
+            </SnackbarProvider>
           </QueryProvider>
         </ReduxProvider>
       </ThemeProvider>

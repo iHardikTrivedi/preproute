@@ -1,4 +1,4 @@
-import { STORAGE } from "@/config";
+import { STORAGE } from "@/config/storage";
 
 class StorageService {
   setAccessToken(token: string) {
@@ -30,13 +30,23 @@ class StorageService {
   }
 
   getUser<T>() {
-    const data = sessionStorage.getItem(STORAGE.USER);
+    try {
+      const data = sessionStorage.getItem(STORAGE.USER);
 
-    return data ? (JSON.parse(data) as T) : null;
+      return data ? (JSON.parse(data) as T) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  removeUser() {
+    sessionStorage.removeItem(STORAGE.USER);
   }
 
   clear() {
-    sessionStorage.clear();
+    this.removeAccessToken();
+    this.removeRefreshToken();
+    this.removeUser();
   }
 }
 
