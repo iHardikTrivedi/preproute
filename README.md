@@ -5,64 +5,97 @@
   <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript" />
   <img src="https://img.shields.io/badge/Vite-7.x-646CFF?logo=vite" />
   <img src="https://img.shields.io/badge/Material_UI-MUI-007FFF?logo=mui" />
-  <img src="https://img.shields.io/badge/Redux-Toolkit-764ABC?logo=redux" />
+  <img src="https://img.shields.io/badge/Redux_Toolkit-764ABC?logo=redux" />
   <img src="https://img.shields.io/badge/TanStack_Query-v5-FF4154" />
-  <img src="https://img.shields.io/badge/License-Assessment-blue" />
+  <img src="https://img.shields.io/badge/React_Hook_Form-EC5990" />
+  <img src="https://img.shields.io/badge/Zod-Type_Safe-3068B7" />
+  <img src="https://img.shields.io/badge/Axios-5A29E4" />
+  <img src="https://img.shields.io/badge/ESLint-Code_Quality-4B32C3?logo=eslint" />
+  <img src="https://img.shields.io/badge/Prettier-Formatted-F7B93E?logo=prettier" />
+  <img src="https://img.shields.io/badge/Build-Passing-brightgreen" />
+  <img src="https://img.shields.io/badge/Status-Completed-success" />
 </p>
 
----
+<p align="center">
 
-## 📖 Overview
+**A production-ready Test Management System built with React + TypeScript + Vite**
 
-**Preproute Test Management System** is a modern, production-ready web application developed as part of the **Preproute Frontend Developer Technical Assignment**.
+Developed as part of the **Preproute Frontend Developer Technical Assignment** following enterprise-grade architecture and modern frontend development best practices.
 
-The application enables administrators to create, manage, preview, and publish MCQ-based tests through a responsive and scalable interface while following modern React development practices.
-
-The application is built using **React + TypeScript + Vite** with a feature-based architecture, reusable components, centralized API management, and enterprise-grade coding standards.
+</p>
 
 ---
 
 # 🚀 Live Demo
 
-**Application**
-
-https://your-vercel-url.vercel.app
+> https://your-vercel-url.vercel.app
 
 ---
 
 # 🎥 Walkthrough Video
 
-https://your-video-url.com
+> https://your-video-link.com
 
 ---
 
 # 💻 GitHub Repository
 
-https://github.com/HardikTrivedi/preproute
+> https://github.com/HardikTrivedi/preproute
 
 ---
 
-# 📋 Assignment Overview
+# 📖 Overview
 
-This application was developed for the **Preproute Frontend Developer Evaluation Round**.
+The **Preproute Test Management System** is a modern web application that enables administrators to create, manage, preview, and publish MCQ-based tests through an intuitive and responsive interface.
 
-The assignment evaluates:
+The project was developed using **React**, **TypeScript**, and **Vite** while following scalable architecture, reusable components, and clean coding principles commonly used in enterprise frontend applications.
 
-- Authentication
+---
+
+# 🎯 Assignment Objective
+
+The assignment required building a complete **Test Management Application** with the following workflow:
+
+```text
+Login
+
+↓
+
+Dashboard
+
+↓
+
+Create / Edit Test
+
+↓
+
+Add Questions
+
+↓
+
+Preview Test
+
+↓
+
+Publish Test
+```
+
+The implementation focuses on:
+
+- JWT Authentication
 - CRUD Operations
 - REST API Integration
 - Form Validation
 - Responsive UI
 - Code Quality
-- Project Structure
-- TypeScript Usage
-- Best Practices
+- Type Safety
+- Scalable Architecture
 
 ---
 
 # ✨ Features
 
-## Authentication
+## 🔐 Authentication
 
 - JWT Authentication
 - Protected Routes
@@ -72,18 +105,18 @@ The assignment evaluates:
 
 ---
 
-## Dashboard
+## 📊 Dashboard
 
-- Display all Tests
+- View All Tests
 - Create New Test
 - Edit Test
 - Delete Test
 - Search Tests
-- Responsive Table
+- Responsive Table Layout
 
 ---
 
-## Test Management
+## 📝 Test Management
 
 - Create Test
 - Update Test
@@ -91,177 +124,268 @@ The assignment evaluates:
 - Publish Test
 - Subject Selection
 - Topic Selection
-- Sub Topic Selection
+- Sub-topic Selection
 - Difficulty Selection
 - Marking Scheme
+- Total Marks
+- Total Time
 
 ---
 
-## Question Management
+## ❓ Question Management
 
 - Bulk Question Creation
-- MCQ Options
+- Multiple Choice Questions
+- Four Options
 - Correct Answer Selection
-- Edit Question
-- Delete Question
-- Question Explanation
+- Explanation
 - Difficulty
+- Topic Mapping
 - Media URL Support
+- Edit Questions
+- Delete Questions
 
 ---
 
-## Preview
+## 👀 Preview
 
-- Complete Test Preview
+- Preview Test
 - Review Questions
-- Edit before Publishing
+- Edit Before Publishing
 - Publish Test
 
 ---
 
-## User Experience
+## 💎 User Experience
 
-- Loading Indicators
-- Error Handling
-- Empty States
-- Responsive Layout
-- Toast Notifications
+- Responsive Design
+- Material UI Components
 - Form Validation
+- Toast Notifications
+- Loading States
+- Empty States
+- Error Handling
+- Confirmation Dialogs
 
 ---
 
-# 🛠 Tech Stack
+# 🛠 Technology Stack
 
-| Category | Technology |
-|------------|----------------|
-| Framework | React 19 |
-| Language | TypeScript |
-| Build Tool | Vite |
-| Routing | React Router DOM |
-| UI | Material UI (MUI) |
-| Forms | React Hook Form |
-| Validation | Zod |
-| Global State | Redux Toolkit |
-| Server State | TanStack Query |
-| API | Axios |
-| Notifications | Sonner |
-| Date Library | Day.js |
-| Linting | ESLint |
-| Formatting | Prettier |
+## Frontend
+
+| Technology | Purpose |
+|------------|----------|
+| React 19 | Frontend Framework |
+| TypeScript | Static Type Checking |
+| Vite | Build Tool |
+| React Router DOM | Routing |
+| Material UI | UI Components |
+
+---
+
+## State Management
+
+| Technology | Purpose |
+|------------|----------|
+| Redux Toolkit | Global Client State |
+| TanStack Query | Server State Management |
+
+---
+
+## Forms & Validation
+
+| Technology | Purpose |
+|------------|----------|
+| React Hook Form | Form State Management |
+| Zod | Schema Validation |
+
+---
+
+## API & Utilities
+
+| Technology | Purpose |
+|------------|----------|
+| Axios | HTTP Client |
+| Day.js | Date Formatting |
+| Sonner | Toast Notifications |
+
+---
+
+## Code Quality
+
+| Technology | Purpose |
+|------------|----------|
+| ESLint | Code Quality |
+| Prettier | Code Formatting |
+
+---
+
+# ⭐ Why This Project?
+
+This project demonstrates more than just CRUD functionality.
+
+It showcases:
+
+- Enterprise-grade React Architecture
+- Feature-Based Folder Structure
+- Clean API Layer
+- Reusable Components
+- TypeScript Best Practices
+- Modern State Management
+- Responsive Design
+- Scalable Codebase
+- Production-Ready Documentation
+
+The goal was to build an application that reflects real-world frontend engineering practices rather than only fulfilling functional requirements.
 
 ---
 
 # 📂 Project Structure
 
+The project follows a **Feature-Based Architecture**, where each business feature is isolated into its own module. This improves maintainability, scalability, and code organization.
+
 ```text
 src
 │
 ├── api
-│   ├── axios.ts
-│   ├── endpoints.ts
-│   └── interceptors.ts
-│
 ├── app
-│   ├── providers
-│   ├── router
-│   └── store
-│
 ├── assets
-│
 ├── components
-│   ├── common
-│   ├── dialogs
-│   ├── forms
-│   ├── layout
-│   ├── loaders
-│   ├── table
-│   └── ui
-│
 ├── constants
-│
 ├── features
 │   ├── auth
 │   ├── dashboard
 │   ├── tests
 │   ├── questions
 │   └── preview
-│
 ├── hooks
-│
 ├── layouts
-│
 ├── routes
-│
 ├── styles
-│
 ├── theme
-│
 ├── types
-│
 ├── utils
-│
 ├── App.tsx
-│
 └── main.tsx
 ```
 
+For a complete breakdown of the folder structure and architecture, refer to **[ARCHITECTURE.md](./ARCHITECTURE.md)**.
+
 ---
 
-# 🏛 System Architecture
+# 📚 Project Documentation
+
+Comprehensive documentation is available in the following files.
+
+| 📄 Document | 📖 Description |
+|-------------|----------------|
+| 📖 **[README.md](./README.md)** | Project overview, setup instructions, features, and usage |
+| 🏛️ **[ARCHITECTURE.md](./ARCHITECTURE.md)** | Application architecture, folder structure, routing, state management, and design patterns |
+| 🏗️ **[SYSTEM_DESIGN.md](./SYSTEM_DESIGN.md)** | High-level system design, application flow, component interaction, security, and scalability |
+| 🌐 **[API.md](./API.md)** | API endpoints, request/response examples, authentication, Axios configuration, and React Query integration |
+| 🤝 **[CONTRIBUTING.md](./CONTRIBUTING.md)** | Development workflow, coding standards, Git workflow, naming conventions, and contribution guide |
+| 📘 **[DECISIONS.md](./DECISIONS.md)** | Architectural decisions, technology choices, trade-offs, and design rationale |
+| 🌱 **[ENV.md](./ENV.md)** | Environment configuration, deployment variables, and security recommendations |
+
+---
+
+# 📖 Documentation Overview
 
 ```text
-                     User
-
-                       │
-
-                       ▼
-
-               React Application
-
-                       │
-
-     ┌─────────────────┴─────────────────┐
-
-     ▼                                   ▼
-
-React Router                        Material UI
-
-     │
-
-     ▼
-
-Feature Modules
-
-     │
-
-┌────┴──────────┐
-
-▼               ▼
-
-Redux      TanStack Query
-
-│               │
-
-▼               ▼
-
-Authentication  API Layer
-
-        │
-
-        ▼
-
-Axios Client
-
-        │
-
-        ▼
-
-Backend REST APIs
+README.md
+│
+├── ARCHITECTURE.md
+│     ├── Project Structure
+│     ├── Folder Organization
+│     ├── Authentication
+│     ├── Routing
+│     ├── State Management
+│     └── API Layer
+│
+├── SYSTEM_DESIGN.md
+│     ├── High-Level Design
+│     ├── Component Architecture
+│     ├── Data Flow
+│     ├── Performance
+│     └── Scalability
+│
+├── API.md
+│     ├── Authentication APIs
+│     ├── Subject APIs
+│     ├── Test APIs
+│     ├── Question APIs
+│     ├── Axios
+│     └── React Query
+│
+├── CONTRIBUTING.md
+│     ├── Setup
+│     ├── Git Workflow
+│     ├── Coding Standards
+│     ├── Naming Conventions
+│     └── Best Practices
+│
+├── DECISIONS.md
+│     ├── Technology Selection
+│     ├── Trade-offs
+│     ├── Architecture Decisions
+│     └── Design Principles
+│
+└── ENV.md
+      ├── Environment Variables
+      ├── Deployment
+      ├── Security
+      └── Configuration
 ```
 
 ---
 
-# 📄 Application Flow
+# 🏗️ Architecture Overview
+
+The application follows a layered architecture that separates presentation, business logic, API communication, and state management.
+
+```text
+Browser
+
+↓
+
+React Application
+
+↓
+
+React Router
+
+↓
+
+Feature Modules
+
+↓
+
+Custom Hooks
+
+↓
+
+React Query / Redux Toolkit
+
+↓
+
+API Services
+
+↓
+
+Axios
+
+↓
+
+REST Backend
+```
+
+For detailed architecture diagrams and explanations, see **[ARCHITECTURE.md](./ARCHITECTURE.md)** and **[SYSTEM_DESIGN.md](./SYSTEM_DESIGN.md)**.
+
+---
+
+# 🔄 Application Flow
+
+The application follows a simple and intuitive workflow.
 
 ```text
 Login
@@ -280,11 +404,11 @@ Add Questions
 
 ↓
 
-Preview
+Preview Test
 
 ↓
 
-Publish
+Publish Test
 
 ↓
 
@@ -293,14 +417,14 @@ Dashboard
 
 ---
 
-# 🔐 Authentication Flow
+# 🔐 Authentication
+
+Authentication is based on JWT tokens.
+
+Flow:
 
 ```text
 Login
-
-↓
-
-POST /auth/login
 
 ↓
 
@@ -317,228 +441,165 @@ Axios Interceptor
 ↓
 
 Protected Routes
-
-↓
-
-Dashboard
 ```
+
+A complete authentication flow diagram is available in **[SYSTEM_DESIGN.md](./SYSTEM_DESIGN.md)**.
 
 ---
 
-# 🌐 API Base URL
+# 🌐 API Integration
 
-```
+The frontend communicates with the backend through REST APIs.
+
+**Base URL**
+
+```text
 https://admin-moderator-backend-staging.up.railway.app/api
 ```
 
----
+The API layer uses:
 
-# 📡 API Endpoints
+- Axios
+- Request Interceptors
+- Response Interceptors
+- TanStack Query
+- Centralized Error Handling
 
-## Authentication
-
-| Method | Endpoint |
-|---------|----------|
-| POST | /auth/login |
-
----
-
-## Subjects
-
-| Method | Endpoint |
-|---------|----------|
-| GET | /subjects |
-
----
-
-## Topics
-
-| Method | Endpoint |
-|---------|----------|
-| GET | /topics/subject/:subjectId |
-
----
-
-## Sub Topics
-
-| Method | Endpoint |
-|---------|----------|
-| GET | /sub-topics/topic/:topicId |
-| POST | /sub-topics/multi-topics |
-
----
-
-## Tests
-
-| Method | Endpoint |
-|---------|----------|
-| GET | /tests |
-| GET | /tests/:id |
-| POST | /tests |
-| PUT | /tests/:id |
-
----
-
-## Questions
-
-| Method | Endpoint |
-|---------|----------|
-| POST | /questions/bulk |
-| POST | /questions/fetchBulk |
+See **[API.md](./API.md)** for the complete API reference.
 
 ---
 
 # 📦 State Management
 
-## Redux Toolkit
+The project separates client state and server state.
 
-Used for
+### Redux Toolkit
+
+Used for:
 
 - Authentication
-- Logged In User
+- User Information
 - JWT Token
 - Global UI State
 
----
+### TanStack Query
 
-## TanStack Query
+Used for:
 
-Used for
+- Subjects
+- Topics
+- Tests
+- Questions
+- API Caching
+- Automatic Refetching
 
-- API Calls
-- Data Fetching
-- CRUD Operations
-- Caching
-- Background Refetching
-- Query Invalidation
-
----
-
-# 📝 Form Validation
-
-All forms use
-
-- React Hook Form
-- Zod
-- Type-safe Validation
-- Reusable Form Components
-- Error Messages
-- Loading State
+Complete implementation details are available in **[ARCHITECTURE.md](./ARCHITECTURE.md)**.
 
 ---
 
-# 🎨 Reusable Components
+# 🧩 Design Principles
 
-- Primary Button
-- Secondary Button
-- Input Field
-- Select Field
-- Multi Select
-- Data Table
-- Search Bar
-- Loader
-- Empty State
-- Confirmation Dialog
-- Status Chip
-- Page Header
+The project follows modern frontend engineering principles.
 
----
-
-# ⚡ Performance Optimizations
-
-- Feature Based Architecture
-- Route Lazy Loading
-- Code Splitting
-- React Query Caching
-- Query Invalidation
-- Centralized API Layer
+- Separation of Concerns
+- Feature-Based Architecture
+- Single Responsibility Principle
+- DRY (Don't Repeat Yourself)
 - Reusable Components
-- Strict TypeScript
-- Optimized Production Build
-- Memoization where required
+- Type Safety
+- Clean API Layer
+- Scalable Folder Structure
+- Maintainable Code
 
----
-
-# ♿ Accessibility
-
-The application follows accessibility best practices.
-
-- Semantic HTML
-- Proper Labels
-- Keyboard Navigation
-- Accessible Dialogs
-- Responsive Typography
-- Focus Management
-- Color Contrast
-
----
-
-# 🛡 Error Handling
-
-The application includes centralized error handling.
-
-- Axios Response Interceptors
-- Unauthorized Handling
-- Network Errors
-- Validation Errors
-- Toast Notifications
-- Graceful Fallback UI
-
----
-
-# ⚙ Environment Variables
-
-Create a `.env` file.
-
-```env
-VITE_API_URL=https://admin-moderator-backend-staging.up.railway.app/api
-```
+Detailed design decisions and trade-offs are documented in **[DECISIONS.md](./DECISIONS.md)**.
 
 ---
 
 # 🚀 Getting Started
 
-## Clone Repository
+Follow the steps below to run the project locally.
+
+## Prerequisites
+
+Ensure you have the following installed:
+
+| Software | Version |
+|----------|---------|
+| Node.js | >= 20.x |
+| npm | >= 10.x |
+| Git | Latest |
+
+Verify your installation:
+
+```bash
+node -v
+npm -v
+git --version
+```
+
+---
+
+# 📥 Installation
+
+### Clone the Repository
 
 ```bash
 git clone https://github.com/HardikTrivedi/preproute.git
 ```
 
----
-
-## Navigate
+### Navigate to Project
 
 ```bash
 cd preproute
 ```
 
----
-
-## Install Packages
+### Install Dependencies
 
 ```bash
 npm install
 ```
 
+### Configure Environment Variables
+
+Copy the example environment file.
+
+```bash
+cp .env.example .env
+```
+
+Update the values inside `.env` as required.
+
+For complete environment configuration, refer to:
+
+➡️ **[ENV.md](./ENV.md)**
+
 ---
 
-## Start Development Server
+# ▶️ Running the Application
+
+Start the development server.
 
 ```bash
 npm run dev
 ```
 
+The application will be available at:
+
+```
+http://localhost:5173
+```
+
 ---
 
-## Production Build
+# 📦 Production Build
+
+Create a production build.
 
 ```bash
 npm run build
 ```
 
----
-
-## Preview Production Build
+Preview the production build locally.
 
 ```bash
 npm run preview
@@ -550,120 +611,98 @@ npm run preview
 
 | Command | Description |
 |----------|-------------|
-| npm run dev | Development Server |
-| npm run build | Production Build |
-| npm run preview | Preview Production Build |
-| npm run lint | ESLint |
+| `npm install` | Install project dependencies |
+| `npm run dev` | Start development server |
+| `npm run build` | Create production build |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Run ESLint |
 
 ---
 
-# 📱 Responsive Support
+# 🌍 Deployment
 
-The application is optimized for
+The application is deployment-ready and can be hosted on platforms such as:
 
-- Desktop
-- Laptop
-- Tablet
-- Mobile
+- ▲ Vercel (Recommended)
+- Netlify
+- GitHub Pages
+- Firebase Hosting
 
----
+For Vercel:
 
-# 🏗 Design Decisions
+**Build Command**
 
-### Why React?
+```bash
+npm run build
+```
 
-- Component Driven Development
-- Large Ecosystem
-- Excellent Performance
+**Output Directory**
 
-### Why TypeScript?
+```
+dist
+```
 
-- Type Safety
-- Better Maintainability
-- Better IntelliSense
+For deployment configuration and environment setup, see:
 
-### Why Vite?
-
-- Lightning Fast Development
-- Optimized Build
-- Excellent DX
-
-### Why Redux Toolkit?
-
-Used only for Authentication and Global UI.
-
-### Why TanStack Query?
-
-Chosen for
-
-- Server State
-- Caching
-- Automatic Refetching
-- Mutation Handling
-
-### Why Axios?
-
-- Interceptors
-- Centralized Configuration
-- Better Error Handling
-
-### Why React Hook Form?
-
-- High Performance
-- Less Re-rendering
-- Easy Validation
-
-### Why Zod?
-
-- Type-safe Validation
-- Excellent TypeScript Integration
-
-### Why Material UI?
-
-- Accessible Components
-- Responsive Design
-- Production Ready
+➡️ **[ENV.md](./ENV.md)**
 
 ---
 
-# 🚀 Future Improvements
+# 📱 Browser Support
 
-- Unit Testing (Vitest)
-- React Testing Library
-- Playwright
-- Dark Theme
-- Internationalization (i18n)
-- Pagination
-- Drag & Drop Questions
-- Rich Text Editor
-- Image Upload
-- Analytics Dashboard
+The application is tested on modern browsers.
+
+- ✅ Google Chrome
+- ✅ Microsoft Edge
+- ✅ Mozilla Firefox
+- ✅ Safari
+
+---
+
+# 📊 Project Status
+
+| Module | Status |
+|----------|--------|
+| Authentication | ✅ Complete |
+| Dashboard | ✅ Complete |
+| Test Management | ✅ Complete |
+| Question Management | ✅ Complete |
+| Preview & Publish | ✅ Complete |
+| API Integration | ✅ Complete |
+| Responsive Design | ✅ Complete |
+| Documentation | ✅ Complete |
 
 ---
 
 # 📸 Screenshots
 
-> Add screenshots after completing the application.
+The following screenshots will be added after deployment.
 
-- Login
-- Dashboard
-- Create Test
-- Add Questions
-- Preview
-- Publish
+- 🔐 Login
+- 📊 Dashboard
+- 📝 Create Test
+- ❓ Add Questions
+- 👀 Preview Test
+- 🚀 Publish Test
 
 ---
 
-# 📄 Documentation
+# 🚀 Future Enhancements
 
-The repository also includes:
+The architecture is designed to support future improvements, including:
 
-- ✅ README.md
-- ✅ ARCHITECTURE.md
-- ✅ API.md
-- ✅ CONTRIBUTING.md
-- ✅ CHANGELOG.md
-- ✅ .env.example
+- Role-Based Access Control (RBAC)
+- Dark Mode
+- Internationalization (i18n)
+- Rich Text Editor
+- Question Bank
+- Bulk Import / Export
+- Analytics Dashboard
+- Pagination & Advanced Filters
+- Unit Testing (Vitest)
+- React Testing Library
+- Playwright E2E Tests
+- Progressive Web App (PWA)
 
 ---
 
@@ -673,28 +712,44 @@ The repository also includes:
 
 **Senior Mobile & Frontend Engineer**
 
-Portfolio
-
-https://ihardiktrivedi.com
-
-LinkedIn
-
-https://www.linkedin.com/in/ihardiktrivedi/
-
-GitHub
-
-https://github.com/HardikTrivedi
+- 🌐 Portfolio: https://ihardiktrivedi.com
+- 💼 LinkedIn: https://www.linkedin.com/in/ihardiktrivedi/
+- 🐙 GitHub: https://github.com/HardikTrivedi
 
 ---
 
 # 🙏 Acknowledgements
 
-Special thanks to the **Preproute Team** for providing this technical assignment.
+Special thanks to the **Preproute Team** for providing this technical assignment and the opportunity to demonstrate modern frontend engineering practices.
 
-This project follows enterprise-grade React development practices with a focus on scalability, maintainability, performance, and clean architecture.
+This project was built using:
+
+- React
+- TypeScript
+- Vite
+- Material UI
+- Redux Toolkit
+- TanStack Query
+- React Hook Form
+- Zod
+- Axios
 
 ---
 
 # 📄 License
 
-This repository was created solely for the **Preproute Frontend Developer Technical Assessment** and is intended for evaluation purposes only.
+This project was developed exclusively for the **Preproute Frontend Developer Technical Assignment**.
+
+It is intended for technical evaluation purposes only and demonstrates modern React development practices, scalable architecture, clean code principles, and production-ready documentation.
+
+---
+
+<div align="center">
+
+### ⭐ Thank you for reviewing this project!
+
+If you found this project useful, consider giving it a ⭐ on GitHub.
+
+Built with ❤️ using **React + TypeScript + Vite**
+
+</div>
