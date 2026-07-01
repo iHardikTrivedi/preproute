@@ -29,6 +29,7 @@ export const COLORS = {
     default: "#D1D5DB",
     strong: "#9CA3AF",
     focus: "#5988EF",
+    primaryLight: "#60A5FA",
   },
 
   success: {

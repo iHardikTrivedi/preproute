@@ -1,1 +1,1 @@
-export { default as PreprouteLogo } from "./preproute-logo.svg";
+export { default as PrepRouteLogo } from "./preproute-logo.svg";

@@ -1,10 +1,10 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
+import LoginPage from "@/features/auth/pages/LoginPage";
 import ProtectedRoute from "./ProtectedRoute";
 import { ROUTES } from "./routes";
 
 // Temporary pages
-const LoginPage = () => <h1>Login</h1>;
 const DashboardPage = () => <h1>Dashboard</h1>;
 const CreateTestPage = () => <h1>Create Test</h1>;
 const QuestionsPage = () => <h1>Questions</h1>;
@@ -25,10 +25,7 @@ const AppRouter = () => {
       </Route>
 
       {/* 404 */}
-      <Route
-        path={ROUTES.NOT_FOUND}
-        element={<Navigate to={ROUTES.LOGIN} replace />}
-      />
+      <Route path={ROUTES.NOT_FOUND} element={<Navigate to={ROUTES.LOGIN} replace />} />
     </Routes>
   );
 };

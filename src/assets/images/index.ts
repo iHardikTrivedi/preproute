@@ -1,1 +1,1 @@
-export { default as LoginIllustration } from "./login-illustration.svg";
+export { default as LoginIllustrationImage } from "./login-illustration.svg";
