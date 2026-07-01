@@ -1,46 +1,62 @@
 # 📝 Preproute Test Management System
 
-A production-ready **Test Management Application** built with **React, TypeScript, and Vite** as part of the **Preproute Frontend Developer Technical Assignment**.
+<p align="center">
+  <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react" />
+  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript" />
+  <img src="https://img.shields.io/badge/Vite-7.x-646CFF?logo=vite" />
+  <img src="https://img.shields.io/badge/Material_UI-MUI-007FFF?logo=mui" />
+  <img src="https://img.shields.io/badge/Redux-Toolkit-764ABC?logo=redux" />
+  <img src="https://img.shields.io/badge/TanStack_Query-v5-FF4154" />
+  <img src="https://img.shields.io/badge/License-Assessment-blue" />
+</p>
 
-The application enables administrators to create, manage, preview, and publish MCQ-based tests through a clean, responsive interface integrated with REST APIs.
+---
+
+## 📖 Overview
+
+**Preproute Test Management System** is a modern, production-ready web application developed as part of the **Preproute Frontend Developer Technical Assignment**.
+
+The application enables administrators to create, manage, preview, and publish MCQ-based tests through a responsive and scalable interface while following modern React development practices.
+
+The application is built using **React + TypeScript + Vite** with a feature-based architecture, reusable components, centralized API management, and enterprise-grade coding standards.
 
 ---
 
 # 🚀 Live Demo
 
-🔗 https://your-vercel-url.vercel.app
+**Application**
 
-> *(Update after deployment)*
-
----
-
-# 📂 GitHub Repository
-
-🔗 [https://github.com/HardikTrivedi/preproute-test-management](https://github.com/iHardikTrivedi/preproute)
+https://your-vercel-url.vercel.app
 
 ---
 
 # 🎥 Walkthrough Video
 
-🔗 https://your-video-link.com
+https://your-video-url.com
 
-> *(Update after recording the walkthrough)*
+---
+
+# 💻 GitHub Repository
+
+https://github.com/HardikTrivedi/preproute
 
 ---
 
 # 📋 Assignment Overview
 
-This project was developed as part of the **Preproute Frontend Developer Evaluation Round**.
+This application was developed for the **Preproute Frontend Developer Evaluation Round**.
 
-The assignment focuses on:
+The assignment evaluates:
 
 - Authentication
 - CRUD Operations
 - REST API Integration
+- Form Validation
 - Responsive UI
-- Clean Code Architecture
-- TypeScript Best Practices
-- Production-ready React Development
+- Code Quality
+- Project Structure
+- TypeScript Usage
+- Best Practices
 
 ---
 
@@ -48,18 +64,24 @@ The assignment focuses on:
 
 ## Authentication
 
-- JWT Login
+- JWT Authentication
 - Protected Routes
-- Persistent Session
-- Automatic Logout on Unauthorized Response
+- Session Persistence
+- Automatic Logout
+- Axios Authorization Interceptor
+
+---
 
 ## Dashboard
 
-- Display All Tests
-- View Test Details
+- Display all Tests
+- Create New Test
 - Edit Test
 - Delete Test
-- Create New Test
+- Search Tests
+- Responsive Table
+
+---
 
 ## Test Management
 
@@ -67,28 +89,44 @@ The assignment focuses on:
 - Update Test
 - Save as Draft
 - Publish Test
+- Subject Selection
+- Topic Selection
+- Sub Topic Selection
+- Difficulty Selection
+- Marking Scheme
+
+---
 
 ## Question Management
 
-- Add Multiple MCQ Questions
-- Edit Questions
-- Delete Questions
 - Bulk Question Creation
+- MCQ Options
+- Correct Answer Selection
+- Edit Question
+- Delete Question
+- Question Explanation
+- Difficulty
+- Media URL Support
+
+---
 
 ## Preview
 
 - Complete Test Preview
-- Question Review
+- Review Questions
+- Edit before Publishing
 - Publish Test
+
+---
 
 ## User Experience
 
-- Responsive Design
-- Form Validation
 - Loading Indicators
-- Empty States
 - Error Handling
-- Success Notifications
+- Empty States
+- Responsive Layout
+- Toast Notifications
+- Form Validation
 
 ---
 
@@ -99,20 +137,21 @@ The assignment focuses on:
 | Framework | React 19 |
 | Language | TypeScript |
 | Build Tool | Vite |
-| UI Library | Material UI (MUI) |
 | Routing | React Router DOM |
-| Global State | Redux Toolkit |
-| Server State | TanStack Query |
-| API Client | Axios |
+| UI | Material UI (MUI) |
 | Forms | React Hook Form |
 | Validation | Zod |
+| Global State | Redux Toolkit |
+| Server State | TanStack Query |
+| API | Axios |
 | Notifications | Sonner |
-| Date Handling | Day.js |
-| Code Quality | ESLint + Prettier |
+| Date Library | Day.js |
+| Linting | ESLint |
+| Formatting | Prettier |
 
 ---
 
-# 📁 Folder Structure
+# 📂 Project Structure
 
 ```text
 src
@@ -148,15 +187,76 @@ src
 │   └── preview
 │
 ├── hooks
+│
 ├── layouts
+│
 ├── routes
+│
 ├── styles
+│
 ├── theme
+│
 ├── types
+│
 ├── utils
 │
 ├── App.tsx
+│
 └── main.tsx
+```
+
+---
+
+# 🏛 System Architecture
+
+```text
+                     User
+
+                       │
+
+                       ▼
+
+               React Application
+
+                       │
+
+     ┌─────────────────┴─────────────────┐
+
+     ▼                                   ▼
+
+React Router                        Material UI
+
+     │
+
+     ▼
+
+Feature Modules
+
+     │
+
+┌────┴──────────┐
+
+▼               ▼
+
+Redux      TanStack Query
+
+│               │
+
+▼               ▼
+
+Authentication  API Layer
+
+        │
+
+        ▼
+
+Axios Client
+
+        │
+
+        ▼
+
+Backend REST APIs
 ```
 
 ---
@@ -172,7 +272,7 @@ Dashboard
 
 ↓
 
-Create / Edit Test
+Create Test
 
 ↓
 
@@ -204,11 +304,11 @@ POST /auth/login
 
 ↓
 
-Receive JWT Token
+JWT Token
 
 ↓
 
-Store Token
+Local Storage
 
 ↓
 
@@ -216,7 +316,7 @@ Axios Interceptor
 
 ↓
 
-Protected APIs
+Protected Routes
 
 ↓
 
@@ -225,9 +325,7 @@ Dashboard
 
 ---
 
-# 🌐 Backend API
-
-Base URL
+# 🌐 API Base URL
 
 ```
 https://admin-moderator-backend-staging.up.railway.app/api
@@ -240,7 +338,7 @@ https://admin-moderator-backend-staging.up.railway.app/api
 ## Authentication
 
 | Method | Endpoint |
-|----------|-----------|
+|---------|----------|
 | POST | /auth/login |
 
 ---
@@ -248,7 +346,7 @@ https://admin-moderator-backend-staging.up.railway.app/api
 ## Subjects
 
 | Method | Endpoint |
-|----------|------------|
+|---------|----------|
 | GET | /subjects |
 
 ---
@@ -256,7 +354,7 @@ https://admin-moderator-backend-staging.up.railway.app/api
 ## Topics
 
 | Method | Endpoint |
-|----------|------------|
+|---------|----------|
 | GET | /topics/subject/:subjectId |
 
 ---
@@ -264,7 +362,7 @@ https://admin-moderator-backend-staging.up.railway.app/api
 ## Sub Topics
 
 | Method | Endpoint |
-|----------|------------|
+|---------|----------|
 | GET | /sub-topics/topic/:topicId |
 | POST | /sub-topics/multi-topics |
 
@@ -273,7 +371,7 @@ https://admin-moderator-backend-staging.up.railway.app/api
 ## Tests
 
 | Method | Endpoint |
-|----------|------------|
+|---------|----------|
 | GET | /tests |
 | GET | /tests/:id |
 | POST | /tests |
@@ -284,51 +382,9 @@ https://admin-moderator-backend-staging.up.railway.app/api
 ## Questions
 
 | Method | Endpoint |
-|----------|------------|
+|---------|----------|
 | POST | /questions/bulk |
 | POST | /questions/fetchBulk |
-
----
-
-# 🏗 Architecture
-
-The project follows a **Feature-Based Modular Architecture** with clear separation of concerns.
-
-```text
-Pages
-
-↓
-
-Components
-
-↓
-
-Custom Hooks
-
-↓
-
-React Query
-
-↓
-
-API Services
-
-↓
-
-Axios
-
-↓
-
-Backend APIs
-```
-
-Benefits:
-
-- Modular
-- Scalable
-- Maintainable
-- Reusable
-- Testable
 
 ---
 
@@ -336,35 +392,36 @@ Benefits:
 
 ## Redux Toolkit
 
-Used for:
+Used for
 
 - Authentication
-- Logged-in User
-- Access Token
+- Logged In User
+- JWT Token
 - Global UI State
 
 ---
 
 ## TanStack Query
 
-Used for:
+Used for
 
-- Fetching Data
-- API Caching
+- API Calls
+- Data Fetching
 - CRUD Operations
+- Caching
 - Background Refetching
-- Cache Invalidation
+- Query Invalidation
 
 ---
 
-# 📝 Form Handling
+# 📝 Form Validation
 
-Every form is implemented using:
+All forms use
 
 - React Hook Form
-- Zod Validation
-- Reusable Form Components
+- Zod
 - Type-safe Validation
+- Reusable Form Components
 - Error Messages
 - Loading State
 
@@ -372,19 +429,60 @@ Every form is implemented using:
 
 # 🎨 Reusable Components
 
-- AppLayout
-- ProtectedRoute
-- PageHeader
-- PrimaryButton
-- SecondaryButton
-- InputField
-- SelectField
-- MultiSelect
-- DataTable
+- Primary Button
+- Secondary Button
+- Input Field
+- Select Field
+- Multi Select
+- Data Table
+- Search Bar
 - Loader
-- EmptyState
-- ConfirmDialog
-- StatusChip
+- Empty State
+- Confirmation Dialog
+- Status Chip
+- Page Header
+
+---
+
+# ⚡ Performance Optimizations
+
+- Feature Based Architecture
+- Route Lazy Loading
+- Code Splitting
+- React Query Caching
+- Query Invalidation
+- Centralized API Layer
+- Reusable Components
+- Strict TypeScript
+- Optimized Production Build
+- Memoization where required
+
+---
+
+# ♿ Accessibility
+
+The application follows accessibility best practices.
+
+- Semantic HTML
+- Proper Labels
+- Keyboard Navigation
+- Accessible Dialogs
+- Responsive Typography
+- Focus Management
+- Color Contrast
+
+---
+
+# 🛡 Error Handling
+
+The application includes centralized error handling.
+
+- Axios Response Interceptors
+- Unauthorized Handling
+- Network Errors
+- Validation Errors
+- Toast Notifications
+- Graceful Fallback UI
 
 ---
 
@@ -398,27 +496,33 @@ VITE_API_URL=https://admin-moderator-backend-staging.up.railway.app/api
 
 ---
 
-# 🚀 Installation
+# 🚀 Getting Started
 
-Clone Repository
+## Clone Repository
 
 ```bash
-git clone [https://github.com/HardikTrivedi/preproute-test-management.git](https://github.com/iHardikTrivedi/preproute.git)
+git clone https://github.com/HardikTrivedi/preproute.git
 ```
 
-Navigate
+---
+
+## Navigate
 
 ```bash
 cd preproute
 ```
 
-Install Packages
+---
+
+## Install Packages
 
 ```bash
 npm install
 ```
 
-Run Development Server
+---
+
+## Start Development Server
 
 ```bash
 npm run dev
@@ -426,13 +530,15 @@ npm run dev
 
 ---
 
-# 📦 Production Build
+## Production Build
 
 ```bash
 npm run build
 ```
 
-Preview Production Build
+---
+
+## Preview Production Build
 
 ```bash
 npm run preview
@@ -444,16 +550,16 @@ npm run preview
 
 | Command | Description |
 |----------|-------------|
-| npm run dev | Start Development Server |
+| npm run dev | Development Server |
 | npm run build | Production Build |
 | npm run preview | Preview Production Build |
-| npm run lint | Run ESLint |
+| npm run lint | ESLint |
 
 ---
 
-# 📱 Responsive Design
+# 📱 Responsive Support
 
-Optimized for:
+The application is optimized for
 
 - Desktop
 - Laptop
@@ -462,133 +568,133 @@ Optimized for:
 
 ---
 
-# 🔒 Best Practices Implemented
+# 🏗 Design Decisions
 
-- Feature-Based Folder Structure
-- TypeScript Strict Mode
-- Reusable Components
-- React Hooks
-- Axios Interceptors
-- React Query
-- Redux Toolkit
-- React Hook Form
-- Zod Validation
+### Why React?
+
+- Component Driven Development
+- Large Ecosystem
+- Excellent Performance
+
+### Why TypeScript?
+
+- Type Safety
+- Better Maintainability
+- Better IntelliSense
+
+### Why Vite?
+
+- Lightning Fast Development
+- Optimized Build
+- Excellent DX
+
+### Why Redux Toolkit?
+
+Used only for Authentication and Global UI.
+
+### Why TanStack Query?
+
+Chosen for
+
+- Server State
+- Caching
+- Automatic Refetching
+- Mutation Handling
+
+### Why Axios?
+
+- Interceptors
+- Centralized Configuration
+- Better Error Handling
+
+### Why React Hook Form?
+
+- High Performance
+- Less Re-rendering
+- Easy Validation
+
+### Why Zod?
+
+- Type-safe Validation
+- Excellent TypeScript Integration
+
+### Why Material UI?
+
+- Accessible Components
 - Responsive Design
-- API Layer Separation
-- Environment Variables
-- ESLint
-- Prettier
-- Clean Code Principles
-
----
-
-# 💡 Technical Decisions
-
-## Why React + TypeScript?
-
-Provides strong typing, improved maintainability, better IDE support, and reduces runtime errors.
-
----
-
-## Why Vite?
-
-- Extremely fast development server
-- Optimized production builds
-- Excellent TypeScript support
-
----
-
-## Why Redux Toolkit?
-
-Used only for global application state such as authentication and user session management to keep client state predictable and maintainable.
-
----
-
-## Why TanStack Query?
-
-Chosen for server-state management because it offers:
-
-- Automatic caching
-- Background refetching
-- Query invalidation
-- Simplified API state handling
-
----
-
-## Why Axios?
-
-- Centralized API configuration
-- Request/Response interceptors
-- Cleaner error handling
-- Authorization header management
-
----
-
-## Why React Hook Form?
-
-Provides high-performance forms with minimal re-renders and seamless integration with validation libraries.
-
----
-
-## Why Zod?
-
-Type-safe schema validation with excellent TypeScript integration and cleaner validation logic.
-
----
-
-## Why Material UI?
-
-Material UI offers accessible, responsive, and production-ready components while enabling consistent UI development.
+- Production Ready
 
 ---
 
 # 🚀 Future Improvements
 
-- Unit Testing with Vitest
+- Unit Testing (Vitest)
 - React Testing Library
-- End-to-End Testing with Playwright
-- Dark Mode
+- Playwright
+- Dark Theme
 - Internationalization (i18n)
 - Pagination
-- Advanced Search & Filters
-- Drag & Drop Question Ordering
-- Rich Text Editor for Questions
-- Image Upload Support
+- Drag & Drop Questions
+- Rich Text Editor
+- Image Upload
+- Analytics Dashboard
 
 ---
 
 # 📸 Screenshots
 
-> Add screenshots after implementation.
+> Add screenshots after completing the application.
 
 - Login
 - Dashboard
 - Create Test
 - Add Questions
-- Preview & Publish
+- Preview
+- Publish
 
 ---
 
-# 🙏 Acknowledgements
+# 📄 Documentation
 
-Special thanks to the **Preproute Team** for providing this technical assignment and evaluation opportunity.
+The repository also includes:
 
-This project was developed following modern React development best practices and enterprise-grade architecture principles.
+- ✅ README.md
+- ✅ ARCHITECTURE.md
+- ✅ API.md
+- ✅ CONTRIBUTING.md
+- ✅ CHANGELOG.md
+- ✅ .env.example
 
 ---
 
 # 👨‍💻 Author
 
-**Hardik Trivedi**
+## Hardik Trivedi
 
-Senior Mobile & Frontend Engineer
+**Senior Mobile & Frontend Engineer**
 
-- LinkedIn: https://www.linkedin.com/in/ihardiktrivedi/
-- Portfolio: https://ihardiktrivedi.com
-- GitHub: https://github.com/HardikTrivedi
+Portfolio
+
+https://ihardiktrivedi.com
+
+LinkedIn
+
+https://www.linkedin.com/in/ihardiktrivedi/
+
+GitHub
+
+https://github.com/HardikTrivedi
+
+---
+
+# 🙏 Acknowledgements
+
+Special thanks to the **Preproute Team** for providing this technical assignment.
+
+This project follows enterprise-grade React development practices with a focus on scalability, maintainability, performance, and clean architecture.
 
 ---
 
 # 📄 License
 
-This project was created exclusively for the **Preproute Frontend Developer Technical Assessment** and is intended solely for evaluation purposes.
+This repository was created solely for the **Preproute Frontend Developer Technical Assessment** and is intended for evaluation purposes only.
