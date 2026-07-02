@@ -6,6 +6,13 @@ export const COLORS = {
     logo: "#1B5DEF",
   },
 
+  sidebar: {
+    active: "#384EC7",
+    inactive: "#6B7180",
+    activeBackground: "#F8FAFF",
+    hoverBackground: "#F8FAFF",
+  },
+
   background: {
     page: "#F7FBFF",
     paper: "#FFFFFF",
