@@ -1,5 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
+import { useAppSelector } from "@/hooks/redux";
+
 import LoginPage from "@/features/auth/pages/LoginPage";
 import ProtectedRoute from "./ProtectedRoute";
 import { ROUTES } from "./routes";
@@ -11,10 +13,19 @@ const QuestionsPage = () => <h1>Questions</h1>;
 const PreviewPage = () => <h1>Preview</h1>;
 
 const AppRouter = () => {
+  const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
+
+  if (isLoading) {
+    return null; // or <PageLoader />
+  }
+
   return (
     <Routes>
       {/* Public */}
-      <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+      <Route
+        path={ROUTES.LOGIN}
+        element={isAuthenticated ? <Navigate to={ROUTES.DASHBOARD} replace /> : <LoginPage />}
+      />
 
       {/* Protected */}
       <Route element={<ProtectedRoute />}>

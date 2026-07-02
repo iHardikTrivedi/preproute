@@ -4,39 +4,36 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-
-  user: User;
+  status: string;
+  message: string;
+  data: LoginData;
 }
 
+export interface LoginData {
+  token: string;
+  user: User;
+}
+export interface AuthSession {
+  token: string;
+  user: User;
+}
 export interface User {
   id: string;
   userId: string;
   name: string;
-  email: string;
-  role: UserRole;
+  role: string;
+
+  phone?: string;
+  payment?: boolean;
+  joiningDate?: string;
+  endDate?: string;
+  lastActive?: string;
+  subrole?: string;
 }
-
-export type UserRole = "ADMIN" | "STUDENT" | "MODERATOR" | "SUPER_ADMIN";
-
 export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
-  accessToken: string | null;
-  refreshToken: string | null;
+
+  token: string | null;
   user: User | null;
-}
-
-export interface RefreshTokenRequest {
-  refreshToken: string;
-}
-
-export interface RefreshTokenResponse {
-  accessToken: string;
-  refreshToken: string;
-}
-
-export interface ForgotPasswordRequest {
-  userId: string;
 }

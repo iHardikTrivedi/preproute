@@ -15,12 +15,16 @@ export const useAuth = () => {
   const auth = useAppSelector((state) => state.auth);
 
   const login = useCallback(
-    (data: LoginResponse) => {
-      storage.setAccessToken(data.accessToken);
-      storage.setRefreshToken(data.refreshToken);
-      storage.setUser(data.user);
+    (response: LoginResponse) => {
+      storage.setToken(response.data.token);
+      storage.setUser(response.data.user);
 
-      dispatch(setAuth(data));
+      dispatch(
+        setAuth({
+          token: response.data.token,
+          user: response.data.user,
+        }),
+      );
 
       navigate(ROUTES.DASHBOARD, {
         replace: true,

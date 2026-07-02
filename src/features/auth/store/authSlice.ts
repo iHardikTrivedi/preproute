@@ -1,11 +1,11 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { AuthState, LoginResponse, User } from "../types/auth.types";
+
+import type { AuthSession, AuthState, User } from "../types/auth.types";
 
 const initialState: AuthState = {
   isAuthenticated: false,
-  isLoading: false,
-  accessToken: null,
-  refreshToken: null,
+  isLoading: true,
+  token: null,
   user: null,
 };
 
@@ -16,32 +16,38 @@ const authSlice = createSlice({
     setLoading(state, action: PayloadAction<boolean>) {
       state.isLoading = action.payload;
     },
-    setAuth(state, action: PayloadAction<LoginResponse>) {
+
+    setAuth(state, action: PayloadAction<AuthSession>) {
       state.isAuthenticated = true;
-
-      state.accessToken = action.payload.accessToken;
-      state.refreshToken = action.payload.refreshToken;
-      state.user = action.payload.user;
-
       state.isLoading = false;
+
+      state.token = action.payload.token;
+      state.user = action.payload.user;
     },
+
     updateUser(state, action: PayloadAction<User>) {
       state.user = action.payload;
     },
-    updateAccessToken(state, action: PayloadAction<string>) {
-      state.accessToken = action.payload;
+
+    updateToken(state, action: PayloadAction<string>) {
+      state.token = action.payload;
     },
+
     clearAuth(state) {
       state.isAuthenticated = false;
+      state.isLoading = false;
 
-      state.accessToken = null;
-      state.refreshToken = null;
-
+      state.token = null;
       state.user = null;
+    },
+
+    finishInitialization(state) {
       state.isLoading = false;
     },
   },
 });
 
-export const { setLoading, setAuth, updateUser, updateAccessToken, clearAuth } = authSlice.actions;
+export const { setLoading, setAuth, updateUser, updateToken, clearAuth, finishInitialization } =
+  authSlice.actions;
+
 export default authSlice.reducer;
