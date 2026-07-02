@@ -14,7 +14,7 @@ import { useLogin } from "../hooks/useLogin";
 import { loginSchema, type LoginFormValues } from "../schemas/login.schema";
 
 const LoginForm = () => {
-  const { mutate, isPending } = useLogin();
+  const { login: loginRequest, isPending } = useLogin();
   const { login } = useAuth();
   const notification = useNotification();
 
@@ -26,17 +26,18 @@ const LoginForm = () => {
     },
   });
 
-  const onSubmit = (data: LoginFormValues) => {
-    mutate(data, {
-      onSuccess: (response) => {
-        login(response);
-        notification.success("Login successful.");
-      },
-
-      onError: (error) => {
-        notification.error(getApiErrorMessage(error));
-      },
-    });
+  const onSubmit = async (data: LoginFormValues) => {
+    try {
+      const response = await loginRequest(data);
+      login(response);
+      notification.success("Login successful.");
+    } catch (error) {
+      if (error instanceof Error) {
+        notification.error(getApiErrorMessage(error as never));
+      } else {
+        notification.error("Something went wrong.");
+      }
+    }
   };
 
   return (

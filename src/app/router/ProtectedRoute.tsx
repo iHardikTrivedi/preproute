@@ -1,21 +1,16 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-import PageLoader from "@/components/common/PageLoader";
 import { useAppSelector } from "@/hooks/redux";
+import { selectToken } from "../store/auth.selectors";
 
 import { ROUTES } from "./routes";
 
 const ProtectedRoute = () => {
-  const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
+  const token = useAppSelector(selectToken);
 
-  if (isLoading) {
-    return <PageLoader />;
-  }
-
-  if (!isAuthenticated) {
+  if (!token) {
     return <Navigate to={ROUTES.LOGIN} replace />;
   }
-
   return <Outlet />;
 };
 

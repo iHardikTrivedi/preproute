@@ -1,13 +1,23 @@
-import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-
-import type { ApiErrorResponse } from "@/api/types";
+import { useCallback, useState } from "react";
 
 import AuthApi from "../api/auth.api";
-import type { LoginRequest, LoginResponse } from "../types/auth.types";
+import type { LoginRequest } from "../types/auth.types";
 
 export const useLogin = () => {
-  return useMutation<LoginResponse, AxiosError<ApiErrorResponse>, LoginRequest>({
-    mutationFn: AuthApi.login,
-  });
+  const [isPending, setIsPending] = useState(false);
+
+  const login = useCallback(async (payload: LoginRequest) => {
+    setIsPending(true);
+
+    try {
+      return await AuthApi.login(payload);
+    } finally {
+      setIsPending(false);
+    }
+  }, []);
+
+  return {
+    login,
+    isPending,
+  };
 };

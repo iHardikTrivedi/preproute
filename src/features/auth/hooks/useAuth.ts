@@ -2,9 +2,10 @@ import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import storage from "@/utils/storage";
+import storageService from "@/utils/storageService";
 
 import { ROUTES } from "@/app/router/routes";
+import { selectAuth } from "@/app/store/auth.selectors";
 import { clearAuth, setAuth } from "../store/authSlice";
 import type { LoginResponse } from "../types/auth.types";
 
@@ -12,12 +13,12 @@ export const useAuth = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const auth = useAppSelector((state) => state.auth);
+  const auth = useAppSelector(selectAuth);
 
   const login = useCallback(
     (response: LoginResponse) => {
-      storage.setToken(response.data.token);
-      storage.setUser(response.data.user);
+      storageService.setToken(response.data.token);
+      storageService.setUser(response.data.user);
 
       dispatch(
         setAuth({
@@ -34,7 +35,7 @@ export const useAuth = () => {
   );
 
   const logout = useCallback(() => {
-    storage.clear();
+    storageService.clear();
 
     dispatch(clearAuth());
 

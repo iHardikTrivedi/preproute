@@ -1,12 +1,12 @@
 import api from "./axios";
 
 import { ROUTES } from "@/app/router/routes";
-import storage from "@/utils/storage";
+import storageService from "@/utils/storageService";
 import logger from "./logger";
 
 api.interceptors.request.use(
   (config) => {
-    const token = storage.getAccessToken();
+    const token = storageService.getToken();
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -33,7 +33,7 @@ api.interceptors.response.use(
     logger.error(error);
 
     if (error.response?.status === 401) {
-      storage.clear();
+      storageService.clear();
 
       if (window.location.pathname !== ROUTES.LOGIN) {
         window.location.replace(ROUTES.LOGIN);

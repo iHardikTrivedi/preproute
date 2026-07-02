@@ -11,7 +11,6 @@ import "@fontsource/inter/700.css";
 import App from "./App";
 
 import AuthProvider from "@/app/providers/AuthProvider";
-import QueryProvider from "@/app/providers/QueryProvider";
 import ReduxProvider from "@/app/providers/ReduxProvider";
 import ThemeProvider from "@/app/providers/ThemeProvider";
 
@@ -20,20 +19,18 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <ThemeProvider>
         <ReduxProvider>
-          <QueryProvider>
-            <SnackbarProvider
-              maxSnack={3}
-              autoHideDuration={3000}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            >
-              <AuthProvider>
-                <App />
-              </AuthProvider>
-            </SnackbarProvider>
-          </QueryProvider>
+          <SnackbarProvider
+            maxSnack={3}
+            autoHideDuration={3000}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+          >
+            <AuthProvider>
+              <App />
+            </AuthProvider>
+          </SnackbarProvider>
         </ReduxProvider>
       </ThemeProvider>
     </BrowserRouter>

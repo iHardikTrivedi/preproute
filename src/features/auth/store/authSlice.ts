@@ -3,7 +3,6 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { AuthSession, AuthState, User } from "../types/auth.types";
 
 const initialState: AuthState = {
-  isAuthenticated: false,
   isLoading: true,
   token: null,
   user: null,
@@ -18,7 +17,6 @@ const authSlice = createSlice({
     },
 
     setAuth(state, action: PayloadAction<AuthSession>) {
-      state.isAuthenticated = true;
       state.isLoading = false;
 
       state.token = action.payload.token;
@@ -34,7 +32,6 @@ const authSlice = createSlice({
     },
 
     clearAuth(state) {
-      state.isAuthenticated = false;
       state.isLoading = false;
 
       state.token = null;

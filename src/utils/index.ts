@@ -1,4 +1,4 @@
 export * from "./helpers";
 export * from "./validation";
 
-export { default as storage } from "./storage";
+export { default as storage } from "./storageService";

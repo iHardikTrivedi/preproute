@@ -31,7 +31,6 @@ export interface User {
   subrole?: string;
 }
 export interface AuthState {
-  isAuthenticated: boolean;
   isLoading: boolean;
 
   token: string | null;
