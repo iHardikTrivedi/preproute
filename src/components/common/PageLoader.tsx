@@ -4,14 +4,17 @@ import Loader from "@/components/feedback/Loader";
 
 interface PageLoaderProps {
   text?: string;
+  fullPage?: boolean;
 }
 
-const PageLoader = ({ text = "Loading..." }: PageLoaderProps) => {
+const PageLoader = ({ text = "Loading...", fullPage = false }: PageLoaderProps) => {
   return (
     <Box
       sx={{
-        minHeight: "100vh",
-        bgcolor: "background.default",
+        minHeight: fullPage ? "100vh" : "100%",
+        height: fullPage ? "100vh" : "100%",
+        width: "100%",
+        bgcolor: fullPage ? "background.default" : "transparent",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

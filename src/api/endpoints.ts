@@ -5,11 +5,11 @@ export const ENDPOINTS = {
     REFRESH: "/auth/refresh",
   },
 
-  DASHBOARD: "/dashboard",
+  DASHBOARD: {
+    TESTS: "/tests",
+  },
 
   QUESTIONS: "/questions",
-
-  TESTS: "/tests",
 
   PREVIEW: "/preview",
 } as const;

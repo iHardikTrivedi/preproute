@@ -2,8 +2,6 @@ import type { PropsWithChildren } from "react";
 
 import { Box } from "@mui/material";
 
-import { LAYOUT } from "../constants";
-
 const Content = ({ children }: PropsWithChildren) => {
   return (
     <Box
@@ -11,11 +9,10 @@ const Content = ({ children }: PropsWithChildren) => {
       sx={{
         flex: 1,
 
-        overflow: "auto",
+        display: "flex",
+        flexDirection: "column",
 
-        bgcolor: "background.default",
-
-        p: LAYOUT.CONTENT_PADDING,
+        overflow: "hidden",
       }}
     >
       {children}
