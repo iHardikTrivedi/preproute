@@ -11,25 +11,35 @@ const DashboardLayout = () => {
     <Box
       sx={{
         display: "flex",
+        flexDirection: "column",
         width: "100vw",
         height: "100vh",
         overflow: "hidden",
       }}
     >
-      <Sidebar />
+      <Header />
 
       <Box
         sx={{
-          flex: 1,
           display: "flex",
-          flexDirection: "column",
+          flex: 1,
+          overflow: "hidden",
         }}
       >
-        <Header />
+        <Sidebar />
 
-        <Content>
-          <Outlet />
-        </Content>
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+          }}
+        >
+          <Content>
+            <Outlet />
+          </Content>
+        </Box>
       </Box>
     </Box>
   );

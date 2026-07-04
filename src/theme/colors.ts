@@ -57,6 +57,11 @@ export const COLORS = {
     dark: "#B91C1C",
   },
 
+  destructive: {
+    main: "#FF7F7F",
+    contrastText: "#FFFFFF",
+  },
+
   info: {
     main: "#3B82F6",
     light: "#DBEAFE",

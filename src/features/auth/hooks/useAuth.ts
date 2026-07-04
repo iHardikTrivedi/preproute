@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { useNotification } from "@/hooks/useNotification";
 import storageService from "@/utils/storageService";
 
 import { ROUTES } from "@/app/router/routes";
@@ -12,6 +13,8 @@ import type { LoginResponse } from "../types/auth.types";
 export const useAuth = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const notification = useNotification();
 
   const auth = useAppSelector(selectAuth);
 
@@ -38,6 +41,8 @@ export const useAuth = () => {
     storageService.clear();
 
     dispatch(clearAuth());
+
+    notification.error("Logged out");
 
     navigate(ROUTES.LOGIN, {
       replace: true,

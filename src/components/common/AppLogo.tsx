@@ -9,7 +9,7 @@ interface AppLogoProps {
   clickable?: boolean;
 }
 
-const AppLogo = ({ width = 120, height = "auto", clickable = false }: AppLogoProps) => {
+const AppLogo = ({ width = 160, height = "auto", clickable = false }: AppLogoProps) => {
   const logo = (
     <Box
       component="img"

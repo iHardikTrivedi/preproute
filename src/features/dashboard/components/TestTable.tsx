@@ -3,19 +3,42 @@ import { useMemo, useState } from "react";
 
 import type { TestItem } from "../types/dashboard.types";
 
-import PageLoader from "@/components/common/PageLoader";
 import EmptyState from "./EmptyState";
 import TestTableHead from "./TestTableHead";
 import TestTableRow from "./TestTableRow";
+import TestTableSkeleton from "./TestTableSkeleton";
+
+interface Filters {
+  subject?: string;
+  status?: string;
+  sortCreated?: "asc" | "desc";
+}
 
 interface TestTableProps {
   tests: TestItem[];
   isPending: boolean;
+  subjects?: string[];
+  statuses?: string[];
+  filters?: Filters;
+  onFilterChange?: (next: Filters) => void;
+  searchQuery?: string;
+  onReset?: () => void;
+  showFilters?: boolean;
 }
 
 const PAGE_SIZE = 20;
 
-const TestTable = ({ tests, isPending }: TestTableProps) => {
+const TestTable = ({
+  tests,
+  isPending,
+  subjects = [],
+  statuses = [],
+  filters = {},
+  onFilterChange,
+  searchQuery,
+  onReset,
+  showFilters,
+}: TestTableProps) => {
   const [page, setPage] = useState(1);
 
   const pageCount = Math.max(1, Math.ceil(tests.length / PAGE_SIZE));
@@ -44,11 +67,9 @@ const TestTable = ({ tests, isPending }: TestTableProps) => {
           display: "flex",
           minHeight: 0,
           flexShrink: 0,
-          justifyContent: "center",
-          alignItems: "center",
         }}
       >
-        <PageLoader fullPage={false} />
+        <TestTableSkeleton />
       </Box>
     );
   }
@@ -88,7 +109,15 @@ const TestTable = ({ tests, isPending }: TestTableProps) => {
         }}
       >
         <Table stickyHeader>
-          <TestTableHead />
+          <TestTableHead
+            subjects={subjects}
+            statuses={statuses}
+            filters={filters}
+            onFilterChange={onFilterChange}
+            searchQuery={searchQuery}
+            onReset={onReset}
+            showFilters={!isPending && (showFilters ?? tests.length > 0)}
+          />
 
           <TableBody>
             {visibleTests.map((test) => (

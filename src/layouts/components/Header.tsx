@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 
 import { NotificationBellIcon } from "@/assets/icons";
+import AppLogo from "@/components/common/AppLogo";
 import { LAYOUT } from "../constants";
 import HeaderProfile from "./HeaderProfile";
 
@@ -41,7 +42,7 @@ const Header = () => {
       }}
     >
       {/* Left Side */}
-      <Box />
+      <AppLogo width={160} clickable={false} />
 
       {/* Right Side */}
       <Box

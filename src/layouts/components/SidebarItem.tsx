@@ -29,7 +29,7 @@ const SidebarItem = ({ title, to, icon: Icon, collapsed = false }: SidebarItemPr
             height: 60,
 
             ml: 0,
-            mr: 2,
+            mr: collapsed ? 0 : 2,
             my: 0.5,
 
             pl: collapsed ? 0 : 3,
@@ -57,7 +57,7 @@ const SidebarItem = ({ title, to, icon: Icon, collapsed = false }: SidebarItemPr
               top: 0,
               bottom: 0,
 
-              width: isActive ? 6 : 0,
+              width: isActive && !collapsed ? 6 : 0,
 
               backgroundColor: COLORS.sidebar.active,
 
