@@ -1,5 +1,4 @@
-import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
-import { Box, Divider, IconButton, Stack } from "@mui/material";
+import { Box, Divider, Stack, useMediaQuery, useTheme } from "@mui/material";
 import { useState } from "react";
 
 import { ROUTES } from "@/app/router/routes";
@@ -9,7 +8,9 @@ import { LAYOUT } from "../constants";
 import SidebarItem from "./SidebarItem";
 
 const Sidebar = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [collapsed] = useState(isMobile);
 
   return (
     <Box
@@ -61,12 +62,6 @@ const Sidebar = () => {
           collapsed={collapsed}
         />
       </Stack>
-
-      <Box sx={{ p: 1, pb: 2, display: "flex", justifyContent: "center" }}>
-        <IconButton onClick={() => setCollapsed((s) => !s)} size="small">
-          <MenuOpenRoundedIcon sx={{ transform: collapsed ? "rotate(180deg)" : "none", transition: "transform 0.25s ease" }} />
-        </IconButton>
-      </Box>
     </Box>
   );
 };

@@ -10,7 +10,7 @@ interface AppPasswordFieldProps<T extends FieldValues> {
   control: Control<T>;
   name: FieldPath<T>;
 
-  label: string;
+  label?: string;
 
   placeholder?: string;
 
@@ -40,6 +40,7 @@ const AppPasswordField = <T extends FieldValues>({
           type={showPassword ? "text" : "password"}
           error={!!fieldState.error}
           helperText={fieldState.error?.message}
+          size="small"
           slotProps={{
             input: {
               endAdornment: (
@@ -53,6 +54,24 @@ const AppPasswordField = <T extends FieldValues>({
                   </IconButton>
                 </InputAdornment>
               ),
+            },
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 1,
+              height: 44,
+              "& fieldset": {
+                borderColor: "divider",
+              },
+              "&:hover fieldset": {
+                borderColor: "primary.main",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "primary.main",
+              },
+              "&.Mui-disabled fieldset": {
+                borderColor: "divider",
+              },
             },
           }}
         />

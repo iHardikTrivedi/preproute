@@ -1,6 +1,6 @@
 import { useNotification } from "@/hooks/useNotification";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, Stack } from "@mui/material";
+import { Box, Link, Stack, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 
 import AppButton from "@/components/common/AppButton";
@@ -42,19 +42,33 @@ const LoginForm = () => {
 
   return (
     <Stack component="form" spacing={3} onSubmit={handleSubmit(onSubmit)}>
-      <AppTextField
-        control={control}
-        name="userId"
-        label={LOGIN_TEXT.USER_ID}
-        placeholder={LOGIN_TEXT.USER_ID_PLACEHOLDER}
-      />
+      <Box>
+        <Typography
+          variant="body2"
+          sx={{ color: "text.primary", fontWeight: 500, mb: 1, fontSize: "0.875rem" }}
+        >
+          {LOGIN_TEXT.USER_ID}
+        </Typography>
+        <AppTextField
+          control={control}
+          name="userId"
+          placeholder={LOGIN_TEXT.USER_ID_PLACEHOLDER}
+        />
+      </Box>
 
-      <AppPasswordField
-        control={control}
-        name="password"
-        label={LOGIN_TEXT.PASSWORD}
-        placeholder={LOGIN_TEXT.PASSWORD_PLACEHOLDER}
-      />
+      <Box>
+        <Typography
+          variant="body2"
+          sx={{ color: "text.primary", fontWeight: 500, mb: 1, fontSize: "0.875rem" }}
+        >
+          {LOGIN_TEXT.PASSWORD}
+        </Typography>
+        <AppPasswordField
+          control={control}
+          name="password"
+          placeholder={LOGIN_TEXT.PASSWORD_PLACEHOLDER}
+        />
+      </Box>
 
       <Link
         component="button"

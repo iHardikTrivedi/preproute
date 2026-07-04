@@ -4,6 +4,7 @@ import PageLoader from "@/components/common/PageLoader";
 
 import LoginPage from "@/features/auth/pages/LoginPage";
 import DashboardPage from "@/features/dashboard/pages/DashboardPage";
+import CreateTestPage from "@/features/tests/pages/CreateTestPage";
 
 import DashboardLayout from "@/layouts/DashboardLayout";
 
@@ -14,7 +15,6 @@ import ProtectedRoute from "./ProtectedRoute";
 import { ROUTES } from "./routes";
 
 // Temporary pages
-const CreateTestPage = () => <h1>Create Test</h1>;
 const TestTrackingPage = () => <h1>Test Tracking</h1>;
 const QuestionsPage = () => <h1>Questions</h1>;
 const PreviewPage = () => <h1>Preview</h1>;

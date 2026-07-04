@@ -1,9 +1,8 @@
 import { Box, TextField, Typography } from "@mui/material";
 
-interface AppNumberFieldProps {
+interface AppTextFieldSimpleProps {
   label?: string;
-  name?: string;
-  value: number | string;
+  value: string;
   placeholder?: string;
   onChange: (value: string) => void;
   error?: boolean;
@@ -11,14 +10,11 @@ interface AppNumberFieldProps {
   disabled?: boolean;
   required?: boolean;
   fullWidth?: boolean;
-  min?: number;
-  max?: number;
-  step?: number;
+  type?: string;
 }
 
-const AppNumberField = ({
+const AppTextFieldSimple = ({
   label,
-  name,
   value,
   placeholder,
   onChange,
@@ -27,10 +23,8 @@ const AppNumberField = ({
   disabled = false,
   required = false,
   fullWidth = true,
-  min,
-  max,
-  step,
-}: AppNumberFieldProps) => {
+  type = "text",
+}: AppTextFieldSimpleProps) => {
   return (
     <Box sx={{ width: fullWidth ? "100%" : "auto" }}>
       {label && (
@@ -44,36 +38,22 @@ const AppNumberField = ({
         >
           {label}
           {required && (
-            <Box
-              component="span"
-              sx={{
-                color: "error.main",
-                ml: 0.5,
-              }}
-            >
+            <Box component="span" sx={{ color: "error.main", ml: 0.5 }}>
               *
             </Box>
           )}
         </Typography>
       )}
       <TextField
-        name={name}
         value={value}
-        type="number"
-        placeholder={placeholder}
         onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
         disabled={disabled}
         error={error}
         helperText={helperText}
         size="small"
         fullWidth={fullWidth}
-        slotProps={{
-          htmlInput: {
-            min,
-            max,
-            step,
-          },
-        }}
+        type={type}
         sx={{
           "& .MuiOutlinedInput-root": {
             borderRadius: 1,
@@ -97,4 +77,4 @@ const AppNumberField = ({
   );
 };
 
-export default AppNumberField;
+export default AppTextFieldSimple;
