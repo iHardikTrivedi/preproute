@@ -1,4 +1,4 @@
-import { Box, FormControl, FormHelperText, MenuItem, Select, Typography } from "@mui/material";
+import { Box, CircularProgress, FormControl, FormHelperText, MenuItem, Select, Typography } from "@mui/material";
 
 export interface AppSelectOption {
   label: string;
@@ -17,6 +17,7 @@ interface AppSelectFieldProps {
   disabled?: boolean;
   required?: boolean;
   fullWidth?: boolean;
+  loading?: boolean;
 }
 
 const AppSelectField = ({
@@ -31,6 +32,7 @@ const AppSelectField = ({
   disabled = false,
   required = false,
   fullWidth = true,
+  loading = false,
 }: AppSelectFieldProps) => {
   const selectedOption = options.find((option) => option.value === value);
 
@@ -68,6 +70,9 @@ const AppSelectField = ({
           displayEmpty
           onChange={(event) => onChange(event.target.value)}
           renderValue={() => {
+            if (loading) {
+              return <CircularProgress size={20} color="inherit" />;
+            }
             if (!value) {
               return (
                 <Typography component="span" variant="body2" sx={{ color: "text.disabled" }}>

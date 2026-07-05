@@ -32,7 +32,7 @@ export interface CreateTestRequest {
   total_time: number;
   total_marks: number;
   total_questions: number;
-  status: "draft" | null;
+  status: "draft" | "unpublished" | "live" | "scheduled" | "expired";
 }
 
 export interface UpdateTestRequest {
@@ -85,7 +85,8 @@ export interface Test {
 }
 
 export interface ApiResponse<T> {
-  success: boolean;
+  success?: boolean;
+  status?: string;
   data: T;
   message?: string;
   errors?: Array<{ type: string; msg: string; path: string; location: string }>;

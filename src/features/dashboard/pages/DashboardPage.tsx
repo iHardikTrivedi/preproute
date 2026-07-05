@@ -1,16 +1,20 @@
 import { Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 import AppNoResultFound from "@/components/common/AppNoResultFound";
+import { ROUTES } from "@/app/router/routes";
 import { useEffect, useMemo, useState } from "react";
 import DashboardHeader from "../components/DashboardHeader";
 import DashboardToolbar from "../components/DashboardToolbar";
 import TestTable from "../components/TestTable";
+import type { TestItem } from "../types/dashboard.types";
 import { useDashboard } from "../hooks/useDashboard";
 import { useGetTests } from "../hooks/useGetTests";
 
 const DashboardPage = () => {
   const { tests, updateTests, setDashboardLoading, setDashboardError } = useDashboard();
   const { getTests, isPending } = useGetTests();
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState<{
     subject?: string;
@@ -45,7 +49,7 @@ const DashboardPage = () => {
       }
 
       if (filters.subject && t.subject !== filters.subject) return false;
-      if (filters.status && t.status !== (filters.status as any)) return false;
+      if (filters.status && t.status !== (filters.status as never)) return false;
 
       return true;
     });
@@ -80,6 +84,10 @@ const DashboardPage = () => {
 
     void fetchTests();
   }, [getTests, tests.length, updateTests, setDashboardLoading, setDashboardError]);
+
+  const handleEdit = (test: TestItem) => {
+    navigate(`${ROUTES.CREATE_TEST}?edit=${test.id}`, { state: { test } });
+  };
 
   return (
     <Box
@@ -148,6 +156,7 @@ const DashboardPage = () => {
                 setFilters({});
               }}
               showFilters={false}
+              onEdit={handleEdit}
             />
           )}
         </Box>

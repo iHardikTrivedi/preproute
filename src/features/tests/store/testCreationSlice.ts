@@ -10,8 +10,8 @@ export interface TestCreationState {
 
   // Selected values
   selectedSubjectId: string;
-  selectedTopicId: string;
-  selectedSubTopicId: string;
+  selectedTopicIds: string[];
+  selectedSubTopicIds: string[];
 
   // Form fields
   name: string;
@@ -26,11 +26,19 @@ export interface TestCreationState {
 
   // Loading states
   isLoading: boolean;
+  isLoadingTopics: boolean;
+  isLoadingSubTopics: boolean;
   isCreating: boolean;
   error: string | null;
 
+  // Dropdown states
+  shouldOpenSubTopicsDropdown: boolean;
+
   // Created test
   createdTest: Test | null;
+
+  // Edit mode
+  editingTestId: string | null;
 }
 
 const initialState: TestCreationState = {
@@ -38,8 +46,8 @@ const initialState: TestCreationState = {
   topics: [],
   subTopics: [],
   selectedSubjectId: "",
-  selectedTopicId: "",
-  selectedSubTopicId: "",
+  selectedTopicIds: [],
+  selectedSubTopicIds: [],
   name: "",
   type: "chapterwise",
   difficulty: "easy",
@@ -50,9 +58,13 @@ const initialState: TestCreationState = {
   wrongMarks: "-1",
   unattemptMarks: "0",
   isLoading: false,
+  isLoadingTopics: false,
+  isLoadingSubTopics: false,
   isCreating: false,
   error: null,
   createdTest: null,
+  shouldOpenSubTopicsDropdown: false,
+  editingTestId: null,
 };
 
 const testCreationSlice = createSlice({
@@ -67,8 +79,8 @@ const testCreationSlice = createSlice({
     setSelectedSubjectId(state, action: PayloadAction<string>) {
       state.selectedSubjectId = action.payload;
       // Clear dependent selections
-      state.selectedTopicId = "";
-      state.selectedSubTopicId = "";
+      state.selectedTopicIds = [];
+      state.selectedSubTopicIds = [];
       state.topics = [];
       state.subTopics = [];
     },
@@ -78,9 +90,9 @@ const testCreationSlice = createSlice({
       state.topics = action.payload;
     },
 
-    setSelectedTopicId(state, action: PayloadAction<string>) {
-      state.selectedTopicId = action.payload;
-      state.selectedSubTopicId = "";
+    setSelectedTopicIds(state, action: PayloadAction<string[]>) {
+      state.selectedTopicIds = action.payload;
+      state.selectedSubTopicIds = [];
       state.subTopics = [];
     },
 
@@ -89,8 +101,8 @@ const testCreationSlice = createSlice({
       state.subTopics = action.payload;
     },
 
-    setSelectedSubTopicId(state, action: PayloadAction<string>) {
-      state.selectedSubTopicId = action.payload;
+    setSelectedSubTopicIds(state, action: PayloadAction<string[]>) {
+      state.selectedSubTopicIds = action.payload;
     },
 
     // Form field actions
@@ -135,6 +147,18 @@ const testCreationSlice = createSlice({
       state.isLoading = action.payload;
     },
 
+    setLoadingTopics(state, action: PayloadAction<boolean>) {
+      state.isLoadingTopics = action.payload;
+    },
+
+    setLoadingSubTopics(state, action: PayloadAction<boolean>) {
+      state.isLoadingSubTopics = action.payload;
+    },
+
+    setShouldOpenSubTopicsDropdown(state, action: PayloadAction<boolean>) {
+      state.shouldOpenSubTopicsDropdown = action.payload;
+    },
+
     setCreating(state, action: PayloadAction<boolean>) {
       state.isCreating = action.payload;
     },
@@ -142,6 +166,8 @@ const testCreationSlice = createSlice({
     setError(state, action: PayloadAction<string | null>) {
       state.error = action.payload;
       state.isLoading = false;
+      state.isLoadingTopics = false;
+      state.isLoadingSubTopics = false;
       state.isCreating = false;
     },
 
@@ -152,11 +178,66 @@ const testCreationSlice = createSlice({
       state.error = null;
     },
 
-    // Reset
+    // Set editing test ID
+    setEditingTestId(state, action: PayloadAction<string | null>) {
+      state.editingTestId = action.payload;
+    },
+
+    // Load test data for editing
+    loadTestForEdit(state, action: PayloadAction<{
+      id: string;
+      name: string;
+      type: string;
+      subject: string;
+      topics: string[];
+      subTopics: string[];
+      difficulty: string;
+      totalTime: string;
+      totalQuestions: string;
+      totalMarks: string;
+      correctMarks: string;
+      wrongMarks: string;
+      unattemptMarks: string;
+    }>) {
+      const test = action.payload;
+      state.editingTestId = test.id;
+      state.name = test.name;
+      state.type = test.type;
+      state.selectedSubjectId = test.subject;
+      state.selectedTopicIds = test.topics;
+      state.selectedSubTopicIds = test.subTopics;
+      state.difficulty = test.difficulty;
+      state.totalTime = test.totalTime;
+      state.totalQuestions = test.totalQuestions;
+      state.totalMarks = test.totalMarks;
+      state.correctMarks = test.correctMarks;
+      state.wrongMarks = test.wrongMarks;
+      state.unattemptMarks = test.unattemptMarks;
+    },
+
+    // Reset form fields but keep dropdown data
+    resetFormFields(state) {
+      state.selectedSubjectId = "";
+      state.selectedTopicIds = [];
+      state.selectedSubTopicIds = [];
+      state.name = "";
+      state.type = "chapterwise";
+      state.difficulty = "easy";
+      state.totalTime = "";
+      state.totalQuestions = "";
+      state.totalMarks = "";
+      state.correctMarks = "5";
+      state.wrongMarks = "-1";
+      state.unattemptMarks = "0";
+      state.createdTest = null;
+      state.error = null;
+    },
+
+    // Full reset including dropdown data
     resetForm(state) {
       state.selectedSubjectId = "";
-      state.selectedTopicId = "";
-      state.selectedSubTopicId = "";
+      state.selectedTopicIds = [];
+      state.selectedSubTopicIds = [];
       state.name = "";
       state.type = "chapterwise";
       state.difficulty = "easy";
@@ -170,6 +251,7 @@ const testCreationSlice = createSlice({
       state.subTopics = [];
       state.createdTest = null;
       state.error = null;
+      state.editingTestId = null;
     },
 
     clearTestCreation(state) {
@@ -182,9 +264,9 @@ export const {
   setSubjects,
   setSelectedSubjectId,
   setTopics,
-  setSelectedTopicId,
+  setSelectedTopicIds,
   setSubTopics,
-  setSelectedSubTopicId,
+  setSelectedSubTopicIds,
   setName,
   setType,
   setDifficulty,
@@ -195,10 +277,16 @@ export const {
   setWrongMarks,
   setUnattemptMarks,
   setLoading,
+  setLoadingTopics,
+  setLoadingSubTopics,
+  setShouldOpenSubTopicsDropdown,
   setCreating,
   setError,
   setCreatedTest,
+  setEditingTestId,
+  loadTestForEdit,
   resetForm,
+  resetFormFields,
   clearTestCreation,
 } = testCreationSlice.actions;
 

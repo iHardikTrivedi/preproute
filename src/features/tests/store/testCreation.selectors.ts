@@ -9,8 +9,8 @@ export const selectTopics = (state: RootState) => selectTestCreation(state).topi
 export const selectSubTopics = (state: RootState) => selectTestCreation(state).subTopics;
 
 export const selectSelectedSubjectId = (state: RootState) => selectTestCreation(state).selectedSubjectId;
-export const selectSelectedTopicId = (state: RootState) => selectTestCreation(state).selectedTopicId;
-export const selectSelectedSubTopicId = (state: RootState) => selectTestCreation(state).selectedSubTopicId;
+export const selectSelectedTopicIds = (state: RootState) => selectTestCreation(state).selectedTopicIds;
+export const selectSelectedSubTopicIds = (state: RootState) => selectTestCreation(state).selectedSubTopicIds;
 
 export const selectName = (state: RootState) => selectTestCreation(state).name;
 export const selectType = (state: RootState) => selectTestCreation(state).type;
@@ -23,6 +23,10 @@ export const selectWrongMarks = (state: RootState) => selectTestCreation(state).
 export const selectUnattemptMarks = (state: RootState) => selectTestCreation(state).unattemptMarks;
 
 export const selectIsLoading = (state: RootState) => selectTestCreation(state).isLoading;
+export const selectIsLoadingTopics = (state: RootState) => selectTestCreation(state).isLoadingTopics;
+export const selectIsLoadingSubTopics = (state: RootState) => selectTestCreation(state).isLoadingSubTopics;
 export const selectIsCreating = (state: RootState) => selectTestCreation(state).isCreating;
 export const selectError = (state: RootState) => selectTestCreation(state).error;
 export const selectCreatedTest = (state: RootState) => selectTestCreation(state).createdTest;
+export const selectShouldOpenSubTopicsDropdown = (state: RootState) => selectTestCreation(state).shouldOpenSubTopicsDropdown;
+export const selectEditingTestId = (state: RootState) => selectTestCreation(state).editingTestId;

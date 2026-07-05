@@ -8,6 +8,8 @@ import type { CreateTestRequest, Test } from "../types/tests.types";
 
 import {
   setLoading,
+  setLoadingTopics,
+  setLoadingSubTopics,
   setCreating,
   setError,
   setSubjects,
@@ -25,14 +27,10 @@ export const thunkFetchSubjects = createAsyncThunk<
   try {
     dispatch(setLoading(true));
     const response = await SubjectsApi.getAll();
-    if (response.success) {
-      dispatch(setSubjects(response.data));
-      dispatch(setLoading(false));
-      return;
-    }
-    dispatch(setError("Failed to fetch subjects"));
+    // Set subjects - API returns data directly without success wrapper
+    dispatch(setSubjects(response.data || []));
     dispatch(setLoading(false));
-    return rejectWithValue("Failed to fetch subjects");
+    return;
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to fetch subjects";
     dispatch(setError(message));
@@ -48,45 +46,75 @@ export const thunkFetchTopicsBySubject = createAsyncThunk<
   { rejectValue: string }
 >("testCreation/fetchTopicsBySubject", async (subjectId, { dispatch, rejectWithValue }) => {
   try {
-    dispatch(setLoading(true));
+    dispatch(setLoadingTopics(true));
     const response = await TopicsApi.getBySubject(subjectId);
-    if (response.success) {
+    // API returns status: "success" instead of success: true
+    if (response.status === "success") {
       dispatch(setTopics(response.data));
-      dispatch(setLoading(false));
+      dispatch(setLoadingTopics(false));
       return;
     }
     dispatch(setError("Failed to fetch topics"));
-    dispatch(setLoading(false));
+    dispatch(setLoadingTopics(false));
     return rejectWithValue("Failed to fetch topics");
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to fetch topics";
     dispatch(setError(message));
-    dispatch(setLoading(false));
+    dispatch(setLoadingTopics(false));
     return rejectWithValue(message);
   }
 });
 
-// Async thunk for fetching sub-topics by topic
+// Async thunk for fetching topics by multiple subject IDs
+export const thunkFetchTopicsBySubjects = createAsyncThunk<
+  void,
+  string[],
+  { rejectValue: string }
+>("testCreation/fetchTopicsBySubjects", async (subjectIds, { dispatch, rejectWithValue }) => {
+  try {
+    dispatch(setLoadingTopics(true));
+    // Fetch topics for all subjects and combine
+    const responses = await Promise.all(
+      subjectIds.map((id) => TopicsApi.getBySubject(id))
+    );
+    const allTopics = responses.flatMap((r) => r.data?.data || [] || []);
+    // Remove duplicates by id
+    const uniqueTopics = allTopics.filter(
+      (topic, index, self) => index === self.findIndex((t) => t.id === topic.id)
+    );
+    dispatch(setTopics(uniqueTopics));
+    dispatch(setLoadingTopics(false));
+    return;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to fetch topics";
+    dispatch(setError(message));
+    dispatch(setLoadingTopics(false));
+    return rejectWithValue(message);
+  }
+});
+
+// Async thunk for fetching sub-topics by topics (can be multiple)
 export const thunkFetchSubTopicsByTopic = createAsyncThunk<
   void,
-  string,
+  string[],
   { rejectValue: string }
->("testCreation/fetchSubTopicsByTopic", async (topicId, { dispatch, rejectWithValue }) => {
+>("testCreation/fetchSubTopicsByTopic", async (topicIds, { dispatch, rejectWithValue }) => {
   try {
-    dispatch(setLoading(true));
-    const response = await SubTopicsApi.getByTopic(topicId);
-    if (response.success) {
+    dispatch(setLoadingSubTopics(true));
+    const response = await SubTopicsApi.getByTopics(topicIds);
+    // API returns status: "success" instead of success: true
+    if (response.status === "success" || response.success) {
       dispatch(setSubTopics(response.data));
-      dispatch(setLoading(false));
+      dispatch(setLoadingSubTopics(false));
       return;
     }
     dispatch(setError("Failed to fetch sub-topics"));
-    dispatch(setLoading(false));
+    dispatch(setLoadingSubTopics(false));
     return rejectWithValue("Failed to fetch sub-topics");
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to fetch sub-topics";
     dispatch(setError(message));
-    dispatch(setLoading(false));
+    dispatch(setLoadingSubTopics(false));
     return rejectWithValue(message);
   }
 });
@@ -100,7 +128,8 @@ export const thunkCreateTest = createAsyncThunk<
   try {
     dispatch(setCreating(true));
     const response = await TestsApi.create(payload);
-    if (response.success) {
+    // API returns status: "success" instead of success: true
+    if (response.success || response.status === "success") {
       dispatch(setCreatedTest(response.data));
       dispatch(setCreating(false));
       return response.data;

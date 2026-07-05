@@ -24,6 +24,7 @@ interface TestTableProps {
   searchQuery?: string;
   onReset?: () => void;
   showFilters?: boolean;
+  onEdit?: (test: TestItem) => void;
 }
 
 const PAGE_SIZE = 20;
@@ -38,6 +39,7 @@ const TestTable = ({
   searchQuery,
   onReset,
   showFilters,
+  onEdit,
 }: TestTableProps) => {
   const [page, setPage] = useState(1);
 
@@ -51,8 +53,8 @@ const TestTable = ({
     console.log("View", id);
   };
 
-  const handleEdit = (id: string) => {
-    console.log("Edit", id);
+  const handleEdit = (test: TestItem) => {
+    onEdit?.(test);
   };
 
   const handleDelete = (id: string) => {

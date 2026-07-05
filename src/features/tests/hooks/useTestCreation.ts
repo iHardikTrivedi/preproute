@@ -8,48 +8,56 @@ import { ROUTES } from "@/app/router/routes";
 import type { CreateTestRequest } from "../types/tests.types";
 
 import {
-  thunkFetchSubjects,
-  thunkFetchTopicsBySubject,
-  thunkFetchSubTopicsByTopic,
   thunkCreateTest,
+  thunkFetchSubjects,
+  thunkFetchSubTopicsByTopic,
+  thunkFetchTopicsBySubject,
 } from "./useCreateTest";
 
 import {
-  selectSubjects,
-  selectTopics,
-  selectSubTopics,
-  selectSelectedSubjectId,
-  selectSelectedTopicId,
-  selectSelectedSubTopicId,
-  selectName,
-  selectType,
-  selectDifficulty,
-  selectTotalTime,
-  selectTotalQuestions,
-  selectTotalMarks,
   selectCorrectMarks,
-  selectWrongMarks,
-  selectUnattemptMarks,
-  selectIsLoading,
-  selectIsCreating,
-  selectError,
   selectCreatedTest,
+  selectDifficulty,
+  selectEditingTestId,
+  selectError,
+  selectIsCreating,
+  selectIsLoading,
+  selectIsLoadingSubTopics,
+  selectIsLoadingTopics,
+  selectName,
+  selectSelectedSubjectId,
+  selectSelectedSubTopicIds,
+  selectSelectedTopicIds,
+  selectShouldOpenSubTopicsDropdown,
+  selectSubjects,
+  selectSubTopics,
+  selectTopics,
+  selectTotalMarks,
+  selectTotalQuestions,
+  selectTotalTime,
+  selectType,
+  selectUnattemptMarks,
+  selectWrongMarks,
 } from "../store/testCreation.selectors";
 
 import {
-  setSelectedSubjectId,
-  setSelectedTopicId,
-  setSelectedSubTopicId,
-  setName,
-  setType,
-  setDifficulty,
-  setTotalTime,
-  setTotalQuestions,
-  setTotalMarks,
-  setCorrectMarks,
-  setWrongMarks,
-  setUnattemptMarks,
+  loadTestForEdit,
   resetForm,
+  resetFormFields,
+  setCorrectMarks,
+  setDifficulty,
+  setEditingTestId,
+  setName,
+  setSelectedSubjectId,
+  setSelectedSubTopicIds,
+  setSelectedTopicIds,
+  setShouldOpenSubTopicsDropdown,
+  setTotalMarks,
+  setTotalQuestions,
+  setTotalTime,
+  setType,
+  setUnattemptMarks,
+  setWrongMarks,
 } from "../store/testCreationSlice";
 
 export const useTestCreation = () => {
@@ -62,8 +70,8 @@ export const useTestCreation = () => {
   const topics = useAppSelector(selectTopics);
   const subTopics = useAppSelector(selectSubTopics);
   const selectedSubjectId = useAppSelector(selectSelectedSubjectId);
-  const selectedTopicId = useAppSelector(selectSelectedTopicId);
-  const selectedSubTopicId = useAppSelector(selectSelectedSubTopicId);
+  const selectedTopicIds = useAppSelector(selectSelectedTopicIds);
+  const selectedSubTopicIds = useAppSelector(selectSelectedSubTopicIds);
   const name = useAppSelector(selectName);
   const type = useAppSelector(selectType);
   const difficulty = useAppSelector(selectDifficulty);
@@ -74,13 +82,49 @@ export const useTestCreation = () => {
   const wrongMarks = useAppSelector(selectWrongMarks);
   const unattemptMarks = useAppSelector(selectUnattemptMarks);
   const isLoading = useAppSelector(selectIsLoading);
+  const isLoadingTopics = useAppSelector(selectIsLoadingTopics);
+  const isLoadingSubTopics = useAppSelector(selectIsLoadingSubTopics);
   const isCreating = useAppSelector(selectIsCreating);
   const error = useAppSelector(selectError);
   const createdTest = useAppSelector(selectCreatedTest);
+  const shouldOpenSubTopicsDropdown = useAppSelector(selectShouldOpenSubTopicsDropdown);
+  const editingTestId = useAppSelector(selectEditingTestId);
 
   // Actions
   const fetchSubjects = useCallback(() => {
     dispatch(thunkFetchSubjects());
+  }, [dispatch]);
+
+  const loadTestForEditing = useCallback(
+    async (test: {
+      id: string;
+      name: string;
+      type: string;
+      subject: string;
+      topics: string[];
+      subTopics: string[];
+      difficulty: string;
+      totalTime: string;
+      totalQuestions: string;
+      totalMarks: string;
+      correctMarks: string;
+      wrongMarks: string;
+      unattemptMarks: string;
+    }) => {
+      // First, set the form data
+      dispatch(loadTestForEdit(test));
+      // Then fetch topics for the subject
+      await dispatch(thunkFetchTopicsBySubject(test.subject));
+      // Fetch subtopics for the topics
+      if (test.topics.length > 0) {
+        await dispatch(thunkFetchSubTopicsByTopic(test.topics));
+      }
+    },
+    [dispatch]
+  );
+
+  const clearEditingTest = useCallback(() => {
+    dispatch(setEditingTestId(null));
   }, [dispatch]);
 
   const handleSubjectChange = useCallback(
@@ -90,87 +134,103 @@ export const useTestCreation = () => {
         dispatch(thunkFetchTopicsBySubject(subjectId));
       }
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleTopicChange = useCallback(
-    (topicId: string) => {
-      dispatch(setSelectedTopicId(topicId));
-      if (topicId) {
-        dispatch(thunkFetchSubTopicsByTopic(topicId));
-      }
+    (topicIds: string[]) => {
+      dispatch(setSelectedTopicIds(topicIds));
+      // Clear subtopics when topics change
+      dispatch(setSelectedSubTopicIds([]));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleSubTopicChange = useCallback(
-    (subTopicId: string) => {
-      dispatch(setSelectedSubTopicId(subTopicId));
+    (subTopicIds: string[]) => {
+      // Fetch subtopics for all selected topics first
+      if (selectedTopicIds.length > 0) {
+        dispatch(thunkFetchSubTopicsByTopic(selectedTopicIds));
+      }
+      dispatch(setSelectedSubTopicIds(subTopicIds));
     },
-    [dispatch]
+    [dispatch, selectedTopicIds],
   );
+
+  // Call this when subtopic dropdown is opened
+  const handleSubTopicDropdownOpen = useCallback(() => {
+    if (selectedTopicIds.length > 0) {
+      dispatch(setShouldOpenSubTopicsDropdown(true));
+      dispatch(thunkFetchSubTopicsByTopic(selectedTopicIds));
+    }
+  }, [dispatch, selectedTopicIds]);
+
+  // Call this when subtopic dropdown is closed
+  const handleSubTopicDropdownClose = useCallback(() => {
+    dispatch(setShouldOpenSubTopicsDropdown(false));
+  }, [dispatch]);
 
   const handleNameChange = useCallback(
     (value: string) => {
       dispatch(setName(value));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleTypeChange = useCallback(
     (value: string) => {
       dispatch(setType(value));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleDifficultyChange = useCallback(
     (value: string) => {
       dispatch(setDifficulty(value));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleTotalTimeChange = useCallback(
     (value: string) => {
       dispatch(setTotalTime(value));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleTotalQuestionsChange = useCallback(
     (value: string) => {
       dispatch(setTotalQuestions(value));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleTotalMarksChange = useCallback(
     (value: string) => {
       dispatch(setTotalMarks(value));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleCorrectMarksChange = useCallback(
     (value: string) => {
       dispatch(setCorrectMarks(value));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleWrongMarksChange = useCallback(
     (value: string) => {
       dispatch(setWrongMarks(value));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleUnattemptMarksChange = useCallback(
     (value: string) => {
       dispatch(setUnattemptMarks(value));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const validateForm = useCallback(() => {
@@ -182,12 +242,12 @@ export const useTestCreation = () => {
       notification.error("Subject is required");
       return false;
     }
-    if (!selectedTopicId) {
-      notification.error("Topic is required");
+    if (selectedTopicIds.length === 0) {
+      notification.error("At least one topic is required");
       return false;
     }
-    if (!selectedSubTopicId) {
-      notification.error("Sub Topic is required");
+    if (selectedSubTopicIds.length === 0) {
+      notification.error("At least one sub-topic is required");
       return false;
     }
     if (!totalTime || Number(totalTime) <= 0) {
@@ -203,7 +263,16 @@ export const useTestCreation = () => {
       return false;
     }
     return true;
-  }, [name, selectedSubjectId, selectedTopicId, selectedSubTopicId, totalTime, totalQuestions, totalMarks, notification]);
+  }, [
+    name,
+    selectedSubjectId,
+    selectedTopicIds,
+    selectedSubTopicIds,
+    totalTime,
+    totalQuestions,
+    totalMarks,
+    notification,
+  ]);
 
   const handleCreateTest = useCallback(
     async (saveAsDraft: boolean = false) => {
@@ -213,8 +282,8 @@ export const useTestCreation = () => {
         name: name.trim(),
         type: type as "chapterwise" | "subjectwise",
         subject: selectedSubjectId,
-        topics: [selectedTopicId],
-        sub_topics: [selectedSubTopicId],
+        topics: selectedTopicIds,
+        sub_topics: selectedSubTopicIds,
         correct_marks: Number(correctMarks) || 5,
         wrong_marks: Number(wrongMarks) || -1,
         unattempt_marks: Number(unattemptMarks) || 0,
@@ -222,7 +291,7 @@ export const useTestCreation = () => {
         total_time: Number(totalTime),
         total_marks: Number(totalMarks),
         total_questions: Number(totalQuestions) || 0,
-        status: saveAsDraft ? "draft" : null,
+        status: saveAsDraft ? "draft" : "unpublished",
       };
 
       try {
@@ -231,12 +300,21 @@ export const useTestCreation = () => {
           notification.success("Test saved as draft");
           dispatch(resetForm());
           navigate(ROUTES.DASHBOARD);
+          return { success: true, isDraft: true };
         } else {
           notification.success("Test created successfully");
-          navigate(`${ROUTES.QUESTIONS.replace(":testId", result.id)}`);
+          return { success: true, isDraft: false, testId: result.id };
         }
-      } catch {
-        notification.error("Failed to create test. Please try again.");
+      } catch (error) {
+        // Handle validation errors from API
+        if (error && typeof error === "object" && "errors" in error) {
+          const errors = (error as { errors: Array<{ msg: string }> }).errors;
+          const message = errors.map((e) => `• ${e.msg}`).join("\n");
+          notification.error(message);
+        } else {
+          notification.error("Failed to create test. Please try again.");
+        }
+        return { success: false };
       }
     },
     [
@@ -247,8 +325,6 @@ export const useTestCreation = () => {
       name,
       type,
       selectedSubjectId,
-      selectedTopicId,
-      selectedSubTopicId,
       correctMarks,
       wrongMarks,
       unattemptMarks,
@@ -256,13 +332,17 @@ export const useTestCreation = () => {
       totalTime,
       totalMarks,
       totalQuestions,
-    ]
+    ],
   );
 
   const handleCancel = useCallback(() => {
     dispatch(resetForm());
     navigate(ROUTES.DASHBOARD);
   }, [dispatch, navigate]);
+
+  const handleResetForm = useCallback(() => {
+    dispatch(resetFormFields());
+  }, [dispatch]);
 
   return {
     // Data
@@ -271,8 +351,8 @@ export const useTestCreation = () => {
     subTopics,
     // Selected values
     selectedSubjectId,
-    selectedTopicId,
-    selectedSubTopicId,
+    selectedTopicIds,
+    selectedSubTopicIds,
     // Form fields
     name,
     type,
@@ -285,9 +365,13 @@ export const useTestCreation = () => {
     unattemptMarks,
     // States
     isLoading,
+    isLoadingTopics,
+    isLoadingSubTopics,
     isCreating,
     error,
     createdTest,
+    shouldOpenSubTopicsDropdown,
+    editingTestId,
     // Actions
     fetchSubjects,
     handleSubjectChange,
@@ -305,5 +389,10 @@ export const useTestCreation = () => {
     handleCreateTest,
     handleCancel,
     validateForm,
+    handleSubTopicDropdownOpen,
+    handleSubTopicDropdownClose,
+    handleResetForm,
+    loadTestForEditing,
+    clearEditingTest,
   };
 };

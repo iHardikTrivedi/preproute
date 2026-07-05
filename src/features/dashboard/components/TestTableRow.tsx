@@ -9,7 +9,7 @@ interface TestTableRowProps {
   test: TestItem;
 
   onView?: (id: string) => void;
-  onEdit?: (id: string) => void;
+  onEdit?: (test: TestItem) => void;
   onDelete?: (id: string) => void;
 }
 
@@ -47,7 +47,7 @@ const TestTableRow = ({ test, onView, onEdit, onDelete }: TestTableRowProps) => 
       </TableCell>
 
       <TableCell align="right">
-        <TestActions id={test.id} onView={onView} onEdit={onEdit} onDelete={onDelete} />
+        <TestActions id={test.id} onView={onView} onEdit={() => onEdit?.(test)} onDelete={onDelete} />
       </TableCell>
     </TableRow>
   );
