@@ -1,6 +1,17 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
-import { Box, Checkbox, CircularProgress, FormControl, FormHelperText, ListItemText, MenuItem, Select, Typography } from "@mui/material";
+import type { SelectChangeEvent } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  CircularProgress,
+  FormControl,
+  FormHelperText,
+  ListItemText,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
 
 export interface AppMultiSelectOption {
   label: string;
@@ -46,7 +57,7 @@ const AppMultiSelectField = ({
   const [shouldOpenOnLoad, setShouldOpenOnLoad] = useState(false);
 
   // Sync with external open state
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (open && !internalOpen) {
       setInternalOpen(true);
       setShouldOpenOnLoad(false);
@@ -59,7 +70,7 @@ const AppMultiSelectField = ({
 
   const displayText = selectedLabels.length > 0 ? selectedLabels.join(", ") : placeholder;
 
-  const handleChange = (event: any) => {
+  const handleChange = (event: SelectChangeEvent<string[]>) => {
     const selectedValues = event.target.value as string[];
     onChange(selectedValues);
   };
@@ -82,7 +93,7 @@ const AppMultiSelectField = ({
   };
 
   // When loading completes and we were supposed to open, open the dropdown
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!loading && shouldOpenOnLoad && !internalOpen) {
       setInternalOpen(true);
       setShouldOpenOnLoad(false);
@@ -136,8 +147,10 @@ const AppMultiSelectField = ({
             </Box>
           )}
           MenuProps={{
-            PaperProps: {
-              style: { maxHeight: 300 },
+            slotProps: {
+              paper: {
+                style: { maxHeight: 300 },
+              },
             },
           }}
           sx={{
@@ -161,11 +174,7 @@ const AppMultiSelectField = ({
         >
           {options.map((option) => (
             <MenuItem key={option.value} value={option.value}>
-              <Checkbox
-                checked={values.includes(option.value)}
-                size="small"
-                sx={{ py: 0.5 }}
-              />
+              <Checkbox checked={values.includes(option.value)} size="small" sx={{ py: 0.5 }} />
               <ListItemText primary={option.label} />
             </MenuItem>
           ))}

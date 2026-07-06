@@ -8,11 +8,9 @@ This document explains the major technical decisions made during the development
 
 # Decision 1 — React + TypeScript
 
-## Decision
-
 Use React with TypeScript.
 
-## Reason
+**Reason:**
 
 - Strong typing
 - Better IDE support
@@ -23,11 +21,9 @@ Use React with TypeScript.
 
 # Decision 2 — Vite
 
-## Decision
-
 Use Vite as the build tool.
 
-## Reason
+**Reason:**
 
 - Extremely fast startup
 - Instant HMR
@@ -38,40 +34,34 @@ Use Vite as the build tool.
 
 # Decision 3 — Feature-Based Architecture
 
-## Decision
-
 Organize code by business feature instead of file type.
 
-## Reason
+```
+features/
+
+  auth/
+
+  dashboard/
+
+  tests/
+
+  questions/
+```
+
+**Reason:**
 
 - Easier maintenance
 - Better scalability
 - Feature isolation
 - Cleaner imports
 
-Example
-
-```text
-features/
-
-auth/
-
-tests/
-
-questions/
-
-preview/
-```
-
 ---
 
 # Decision 4 — Material UI
 
-## Decision
-
 Use Material UI as the component library.
 
-## Reason
+**Reason:**
 
 - Accessible components
 - Responsive design
@@ -80,143 +70,81 @@ Use Material UI as the component library.
 
 ---
 
-# Decision 5 — Redux Toolkit
+# Decision 5 — Redux Toolkit for All State
 
-## Decision
+Use Redux Toolkit for both client state and API data via `createAsyncThunk`.
 
-Use Redux Toolkit only for client state.
+**Stored in Redux:**
 
-Stores
+- `authSlice` — token, user, auth state
+- `dashboardSlice` — test list, loading/error
+- `testCreationSlice` — form fields, dropdown data (subjects/topics/subtopics), loading states, edit mode
 
-- User
-- Token
-- Authentication
-- Global UI
+**Reason:**
 
-## Reason
-
-Redux is not ideal for server state.
+Redux Toolkit's `createAsyncThunk` provides a clean, unified pattern for all async operations. All loading, error, and data states live together per feature with no additional caching library needed.
 
 ---
 
-# Decision 6 — TanStack Query
+# Decision 6 — Axios
 
-## Decision
+Centralize API communication through a shared Axios instance.
 
-Use React Query for API data.
+**Reason:**
 
-## Reason
-
-Provides
-
-- Caching
-- Refetching
-- Loading State
-- Error State
-- Query Invalidation
+Supports interceptors, automatic authorization headers, timeouts, and global error handling via `src/api/interceptors.ts`.
 
 ---
 
-# Decision 7 — Axios
+# Decision 7 — React Hook Form + Zod
 
-## Decision
+Use React Hook Form with Zod resolver for all form validation.
 
-Centralize API communication through Axios.
-
-## Reason
-
-Supports
-
-- Interceptors
-- Authorization
-- Timeouts
-- Global Error Handling
-
----
-
-# Decision 8 — React Hook Form
-
-## Decision
-
-Use React Hook Form.
-
-## Reason
+**Reason:**
 
 - Minimal re-renders
 - Excellent performance
-- Easy validation
+- Type-safe validation schemas
+- Natural TypeScript integration
 
 ---
 
-# Decision 9 — Zod
+# Decision 8 — Zod
 
-## Decision
+Use Zod for schema-based validation.
 
-Use Zod.
-
-## Reason
+**Reason:**
 
 - Type-safe validation
 - TypeScript integration
 - Reusable schemas
+- Automatic parsing and transformation
 
 ---
 
-# Decision 10 — Protected Routes
+# Decision 9 — Protected Routes
 
-## Decision
+Secure application routes via `ProtectedRoute` component.
 
-Secure application routes.
-
-Flow
-
-```text
-Login
-
-↓
-
-Token
-
-↓
-
-Protected Route
-
-↓
-
-Dashboard
+```
+Login → Token → ProtectedRoute → Dashboard
 ```
 
-Reason
+**Reason:**
 
-Prevent unauthorized access.
+Prevent unauthorized access to internal pages.
 
 ---
 
-# Decision 11 — API Layer
+# Decision 10 — API Layer
 
-## Decision
+Never call Axios inside components. All API calls follow:
 
-Never call Axios inside components.
-
-Flow
-
-```text
-Component
-
-↓
-
-Hook
-
-↓
-
-API Service
-
-↓
-
-Axios
+```
+Component → Feature Hook (thunk) → API Service → Axios → Backend
 ```
 
-Reason
+**Reason:**
 
 - Reusability
 - Easier testing
@@ -224,95 +152,99 @@ Reason
 
 ---
 
-# Decision 12 — Reusable Components
+# Decision 11 — Reusable Components
 
-Instead of repeating UI,
+Centralized reusable UI components in `src/components/`:
 
-Create
+```
+common/   — AppButton, AppBreadcrumbs, AppSearchField, etc.
 
-- Button
-- Input
-- Loader
-- Dialog
-- Table
+form/     — AppTextFieldSimple, AppSelectField, AppMultiSelectField, etc.
 
-Reason
+feedback/ — Loader
+```
 
-Consistency and maintainability.
+**Reason:**
+
+Consistency and maintainability across the application.
 
 ---
 
-# Decision 13 — Environment Variables
+# Decision 12 — Environment Variables
 
-Store configuration in
+Store configuration in `.env` files.
 
-```
-.env
-```
-
-Reason
+**Reason:**
 
 - Easy deployment
 - No hardcoded URLs
 - Environment-specific configuration
 
+Access via `src/config/env.ts` for type-safe consumption.
+
 ---
 
-# Decision 14 — Folder Structure
+# Decision 13 — Folder Structure
 
-Use
+Use a feature-first structure under `src/features/`:
 
-```text
+```
 features/
-
-components/
-
-hooks/
-
-api/
-
-theme/
-
-utils/
+  auth/
+  dashboard/
+  tests/
+  questions/
 ```
 
-Reason
+Each feature contains its own `api/`, `hooks/`, `store/`, `types/`, `pages/`, `components/`.
 
-Better organization for medium and large applications.
+**Reason:**
 
----
-
-# Decision 15 — Error Handling
-
-Centralize errors using Axios.
-
-Reason
-
-Avoid duplicated try/catch logic.
+Better organization for medium and large applications; all related files are co-located.
 
 ---
 
-# Decision 16 — Loading States
+# Decision 14 — Error Handling
 
-Every async operation provides
+Centralize errors using Axios interceptors (`src/api/interceptors.ts`).
 
-- Loader
-- Disabled buttons
-- Skeletons (where appropriate)
+**Reason:**
 
-Reason
+Avoid duplicated try/catch logic across components.
+
+---
+
+# Decision 15 — Loading States
+
+Every async operation provides:
+
+- Loading flags in Redux state (`isLoading`, `isLoadingTopics`, etc.)
+- Skeleton loaders for tables
+- Disabled buttons during mutations
+
+**Reason:**
 
 Improved user experience.
 
 ---
 
-# Decision 17 — TypeScript Strict Mode
+# Decision 16 — TypeScript Strict Mode
 
-Strict mode remains enabled.
+TypeScript strict mode is enabled.
 
-Reason
+**Reason:**
 
-Catch issues during development rather than runtime.
+Catch type errors during development rather than runtime.
+
+---
+
+# Decision 17 — Notistack for Notifications
+
+Use Notistack for toast notifications.
+
+**Reason:**
+
+Implements Material UI snackbar pattern with stacking support,不需要 imperative API calls, integrates naturally with Redux state.
 
 ---
 
@@ -320,26 +252,22 @@ Catch issues during development rather than runtime.
 
 Use Material UI Grid and responsive breakpoints.
 
-Reason
+**Reason:**
 
-Support
-
-- Desktop
-- Tablet
-- Mobile
+Support for Desktop, Tablet, and Mobile layouts.
 
 ---
 
-# Decision 19 — Code Quality
+# Decision 19 — Vite for Build
 
-Use
+Use Vite for development and production builds.
 
-- ESLint
-- Prettier
+**Reason:**
 
-Reason
-
-Maintain consistent coding standards.
+- Native ESM dev server
+- Fast HMR
+- Optimized Rollup builds
+- TypeScript support out of the box
 
 ---
 
@@ -347,9 +275,9 @@ Maintain consistent coding standards.
 
 Deploy using Vercel.
 
-Reason
+**Reason:**
 
-- Native Vite support
+- Native Vite/React support
 - Fast deployment
 - Automatic HTTPS
 - GitHub integration
@@ -359,17 +287,15 @@ Reason
 # Trade-offs
 
 | Decision | Trade-off |
-|----------|-----------|
+|---------|-----------|
 | Material UI | Larger bundle size, offset by faster development and accessibility |
-| Redux Toolkit | Additional setup, but clearer client state management |
-| React Query | Learning curve, but greatly simplifies server state |
+| Redux Toolkit | Additional setup over useState, but clearer state management for complex features |
 | Feature-Based Architecture | Slightly more folders initially, but scales much better |
+| Zod | Learning curve, but highly valuable type safety |
 
 ---
 
 # Guiding Principles
-
-The project was built following these engineering principles:
 
 - Separation of Concerns
 - DRY (Don't Repeat Yourself)
@@ -386,4 +312,4 @@ The project was built following these engineering principles:
 
 # Summary
 
-These architectural decisions were made to ensure that the application remains scalable, maintainable, and aligned with modern React and TypeScript best practices. The chosen stack and structure are suitable for production applications and provide a solid foundation for future enhancements.
+These architectural decisions ensure the application remains scalable, maintainable, and aligned with modern React and TypeScript best practices. The chosen stack — React 19, Vite, Redux Toolkit, Material UI, React Hook Form, Zod, and Axios — provides a solid, production-ready foundation.

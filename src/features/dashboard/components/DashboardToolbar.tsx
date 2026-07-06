@@ -46,11 +46,6 @@ const DashboardToolbar = ({
 
   const handleClose = () => setAnchorEl(null);
 
-  const apply = () => {
-    onApplyFilters?.(local ?? {});
-    handleClose();
-  };
-
   const reset = () => {
     setLocal({});
     onResetFilters?.();

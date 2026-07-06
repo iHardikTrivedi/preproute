@@ -30,15 +30,13 @@
 
 # 1. Overview
 
-The **Preproute Test Management System** is a single-page application (SPA) built using **React + TypeScript + Vite**. It enables administrators to manage MCQ-based tests through a secure and responsive interface.
+The **Preproute Test Management System** is a single-page application (SPA) built using **React 19 + TypeScript + Vite**.
 
-The application communicates with REST APIs provided by the backend using Axios and manages server state with TanStack Query.
+Administrators can create and manage MCQ-based tests through a secure, responsive interface. The application communicates with a REST backend via Axios, and all async data flows through **Redux Toolkit** `createAsyncThunk` actions.
 
 ---
 
 # 2. System Goals
-
-The application is designed to provide:
 
 - Clean Architecture
 - High Maintainability
@@ -81,23 +79,25 @@ React Router                           Material UI
 
 ▼                ▼
 
-Redux        React Query
+Redux       Redux Toolkit
 
-                   │
+         (createAsyncThunk)
 
-                   ▼
+                  │
+
+                  ▼
 
              API Services
 
-                   │
+                  │
 
-                   ▼
+                  ▼
 
-                 Axios
+                Axios
 
-                   │
+                  │
 
-                   ▼
+                  ▼
 
       Preproute REST Backend
 ```
@@ -119,7 +119,7 @@ Reusable Components
 
 ↓
 
-Hooks
+Hooks (with createAsyncThunk)
 
 ↓
 
@@ -173,11 +173,11 @@ JWT Token
 
 ↓
 
-Local Storage
+localStorage (token + user)
 
 ↓
 
-Redux
+Redux (authSlice)
 
 ↓
 
@@ -191,11 +191,15 @@ Protected Routes
 401 responses trigger:
 
 ```text
-Clear Token
+Clear localStorage
 
 ↓
 
-Redirect Login
+Dispatch clearAuth
+
+↓
+
+Navigate /login
 ```
 
 ---
@@ -203,31 +207,31 @@ Redirect Login
 # 7. Test Creation Flow
 
 ```text
-Create Test
+Dashboard
 
 ↓
 
-Save Draft
+Navigate to Create Test
 
 ↓
 
-Receive Test ID
+Fill Form (subject, topics, subtopics, marks, difficulty)
 
 ↓
 
-Add Questions
+handleCreateTest() — thunkCreateTest
 
 ↓
 
-Bulk Save Questions
+API: POST /tests → receives test ID
 
 ↓
 
-Preview
+Navigate to Questions Page (testId in state)
 
 ↓
 
-Publish
+Add / Edit Questions
 
 ↓
 
@@ -238,75 +242,87 @@ Dashboard
 
 # 8. Component Design
 
-Reusable Components
+## Reusable Components
 
 ```
-AppLayout
+AppLayout / DashboardLayout
 
 Sidebar
 
 Header
 
-PrimaryButton
+AppButton
 
-InputField
+AppTextFieldSimple
 
-SelectField
+AppSelectField
 
-SearchBar
+AppMultiSelectField
 
-Loader
+AppNumberField
 
-Dialog
+AppRadioGroup
 
-DataTable
+AppBreadcrumbs
+
+AppSearchField
+
+Loader / PageLoader
 
 EmptyState
+
+DataTable / TestTable
+
+TestStatusChip
+
+TestActions
 ```
 
-Business Components
+## Business Components
 
 ```
-LoginForm
+LoginPage
 
-TestForm
+DashboardPage
 
-QuestionForm
+CreateTestPage
 
-PreviewCard
+QuestionsPage
 ```
 
 ---
 
 # 9. State Management
 
-Redux
+## Redux Toolkit
 
-Stores
-
-```
-Authentication
-
-Current User
-
-JWT
-
-Theme (Future)
-```
-
-React Query
-
-Stores
+All async data is managed through Redux Toolkit `createAsyncThunk`:
 
 ```
-Subjects
+API Service
 
-Topics
+↓
 
-Tests
+createAsyncThunk (feature hooks)
 
-Questions
+↓
+
+extraReducers (pending / fulfilled / rejected)
+
+↓
+
+Redux State
 ```
+
+**Stores:**
+
+| Slice | Purpose |
+|-------|---------|
+| `authSlice` | JWT token, current user, auth loading/error |
+| `dashboardSlice` | Test list, dashboard loading/error |
+| `testCreationSlice` | Form fields, subjects/topics/subtopics, loading states, edit mode |
+
+No separate caching library — Redux state is the single source of truth.
 
 ---
 
@@ -317,11 +333,11 @@ Component
 
 ↓
 
-Hook
+Feature Hook (calls thunk)
 
 ↓
 
-API Service
+API Service (class method)
 
 ↓
 
@@ -332,11 +348,12 @@ Axios
 Backend
 ```
 
-Advantages
+Advantages:
 
 - Testable
 - Centralized
 - Reusable
+- Type-safe
 
 ---
 
@@ -351,15 +368,15 @@ Axios
 
 ↓
 
-React Query
+createAsyncThunk (in feature hook)
 
 ↓
 
-Hook
+extraReducers → Redux State
 
 ↓
 
-Component
+useAppSelector (in component)
 
 ↓
 
@@ -372,49 +389,49 @@ UI
 
 Errors are centralized through Axios interceptors.
 
-Handled Scenarios
+Handled Scenarios:
 
-- Unauthorized
+- Unauthorized (401 → redirect)
 - Network Failure
 - Timeout
 - Validation Error
 - Internal Server Error
 
-Feedback is provided using toast notifications.
+Feedback is provided using Notistack toast notifications.
 
 ---
 
 # 13. Security
 
-Implemented
+Implemented:
 
-- JWT Authentication
+- JWT Authentication (token in localStorage, Bearer header via interceptor)
 - Protected Routes
-- Environment Variables
-- Authorization Header
-- Input Validation
+- Environment Variables (`.env` not committed)
+- Authorization Header (auto-injected)
+- Input Validation (React Hook Form + Zod)
 
 ---
 
 # 14. Performance
 
-Optimizations
+Optimizations:
 
 - Route Lazy Loading
 - Feature-Based Modules
-- React Query Cache
-- Query Invalidation
-- Code Splitting
-- Production Build with Vite
+- Redux State (no duplicate fetching)
+- Route Code Splitting via Vite
+- Debounced Search
+- Strict TypeScript
 
 ---
 
 # 15. Scalability
 
-The architecture supports
+The architecture supports:
 
-- Multiple User Roles
-- Analytics
+- Multiple User Roles (future)
+- Analytics (future)
 - Pagination
 - Advanced Filters
 - Image Upload
@@ -427,23 +444,25 @@ The architecture supports
 
 # 16. Deployment
 
-Deployment Pipeline
+Deployment Pipeline:
 
 ```text
 Developer
 
 ↓
 
-GitHub
+Git
 
 ↓
 
-Vercel
+Vercel / Railway
 
 ↓
 
 Production
 ```
+
+Environment variables are configured on the hosting platform (Vercel).
 
 ---
 
@@ -452,14 +471,13 @@ Production
 - Role-Based Access Control
 - Audit Logs
 - Dark Mode
-- Internationalization
-- Offline Support
-- PWA
+- Internationalization (i18n)
 - Real-Time Notifications
 - AI-Based Question Suggestions
+- PWA Support
 
 ---
 
 # Conclusion
 
-The architecture follows modern frontend engineering principles with clear separation of concerns, scalable feature modules, reusable components, and centralized API management. It is designed to be maintainable, extensible, and production-ready.
+The architecture follows modern frontend engineering principles with clear separation of concerns, scalable feature modules, reusable components, and centralized API management. Built with React 19, TypeScript, Redux Toolkit, and Material UI — designed to be maintainable, extensible, and production-ready.

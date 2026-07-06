@@ -6,8 +6,6 @@ Welcome to the **Preproute Test Management System** project.
 
 This document describes the development workflow, coding standards, project structure, Git conventions, and best practices followed throughout the project.
 
-Although this project was developed as part of the **Preproute Frontend Developer Technical Assessment**, the project structure follows enterprise-level development standards to ensure maintainability and scalability.
-
 ---
 
 # Table of Contents
@@ -32,33 +30,39 @@ Although this project was developed as part of the **Preproute Frontend Develope
 
 ---
 
-# Project Setup
+# 1. Project Setup
 
 ## Clone Repository
 
 ```bash
-git clone https://github.com/HardikTrivedi/preproute-test-management.git
+git clone https://github.com/HardikTrivedi/preproute.git
 ```
 
-Navigate to project
+Navigate to project:
 
 ```bash
-cd preproute-test-management
+cd preproute
 ```
 
-Install dependencies
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-Start development server
+Start development server:
 
 ```bash
 npm run dev
 ```
 
-Create production build
+Lint:
+
+```bash
+npm run lint
+```
+
+Create production build:
 
 ```bash
 npm run build
@@ -66,61 +70,73 @@ npm run build
 
 ---
 
-# Environment Variables
+# 2. Environment Variables
 
-Create
+Copy the example file:
 
+```bash
+cp .env.example .env
 ```
-.env
-```
 
-Example
-
-```env
-VITE_API_URL=https://admin-moderator-backend-staging.up.railway.app/api
-```
+Update `VITE_API_URL` with your backend URL.
 
 ---
 
-# Folder Structure
+# 3. Folder Structure
 
 ```
 src/
 
-api/
-
-app/
-
-assets/
-
-components/
-
-constants/
-
-features/
-
-hooks/
-
-layouts/
-
-routes/
-
-store/
-
-styles/
-
-theme/
-
-types/
-
-utils/
+├── api/               # Axios instance, interceptors, endpoints, types
+├── app/
+│   ├── providers/     # AuthProvider, ReduxProvider, ThemeProvider
+│   ├── router/       # AppRouter, ProtectedRoute, routes constants
+│   └── store/         # Redux store, rootReducer, selectors
+├── components/
+│   ├── common/        # AppBreadcrumbs, AppButton, AppLogo, AppSearchField,
+│   │                 # AppNoResultFound, PageLoader, etc.
+│   ├── feedback/      # Loader
+│   └── form/         # AppTextFieldSimple, AppSelectField, AppMultiSelectField,
+│                     # AppNumberField, AppRadioGroup, AppPasswordField
+├── config/           # env.ts, queryKeys.ts, messages.ts
+├── features/
+│   ├── auth/
+│   │   ├── api/      # auth.api.ts
+│   │   ├── hooks/    # useAuth.ts, useLogin.ts
+│   │   ├── pages/    # LoginPage.tsx
+│   │   ├── store/    # authSlice.ts + selectors
+│   │   ├── types/    # auth.types.ts
+│   │   └── schemas/  # login.schema.ts
+│   ├── dashboard/
+│   │   ├── api/     # dashboard.api.ts + mappers
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── pages/
+│   │   ├── store/
+│   │   └── types/
+│   ├── tests/
+│   │   ├── api/     # tests.api.ts, subjects.api.ts, topics.api.ts, subtopics.api.ts
+│   │   ├── components/
+│   │   ├── hooks/   # useTestCreation.ts, useCreateTest.ts, useSubjects.ts, useTopics.ts
+│   │   ├── pages/    # CreateTestPage.tsx
+│   │   ├── store/    # testCreationSlice.ts + selectors
+│   │   ├── types/
+│   │   └── constants.ts
+│   └── questions/
+│       └── pages/    # QuestionsPage.tsx
+├── hooks/            # useAppDispatch, useAppSelector, useNotification,
+│                    # useDebounce, useDisclosure
+├── layouts/          # AuthLayout, DashboardLayout
+├── theme/           # theme.ts, colors.ts, typography.ts, palette.ts
+├── types/           # api.ts, auth.ts, common.ts
+└── utils/           # apiError.ts, storageService.ts
 ```
 
 Each folder has a dedicated responsibility.
 
 ---
 
-# Development Workflow
+# 4. Development Workflow
 
 ```
 Feature Request
@@ -135,15 +151,11 @@ Implement Feature
 
 ↓
 
-Test
+Lint (npm run lint)
 
 ↓
 
-Lint
-
-↓
-
-Build
+Build (npm run build)
 
 ↓
 
@@ -158,11 +170,19 @@ Push
 Pull Request
 ```
 
+Before every commit:
+
+```bash
+npm run lint
+```
+
+Ensure `npm run build` passes before pushing.
+
 ---
 
-# Coding Standards
+# 5. Coding Standards
 
-The project follows the following coding principles:
+The project follows these principles:
 
 - Single Responsibility Principle
 - DRY (Don't Repeat Yourself)
@@ -170,108 +190,65 @@ The project follows the following coding principles:
 - Separation of Concerns
 - Feature-Based Architecture
 - Reusable Components
-- Strong Type Safety
+- Strong Type Safety (no `any`)
 
 ---
 
-# Formatting
+# 6. Formatting
 
-Use
-
-- ESLint
-- Prettier
-
-Before every commit
-
-Run
+Use ESLint and Prettier.
 
 ```bash
 npm run lint
 ```
 
-Ensure
-
-```bash
-npm run build
-```
-
-passes successfully.
-
 ---
 
-# Naming Conventions
+# 7. Naming Conventions
 
 ## Components
 
-Use
-
-```
-PascalCase
-```
-
-Example
+PascalCase:
 
 ```
 LoginPage
 
 DashboardPage
 
-QuestionCard
-```
+TestTable
 
----
+TestStatusChip
+```
 
 ## Hooks
 
-Use
-
-```
-camelCase
-
-with use prefix
-```
-
-Example
+camelCase with `use` prefix:
 
 ```
 useLogin()
 
-useTests()
+useDashboard()
 
-useQuestions()
+useTestCreation()
+
+useSubjects()
 ```
 
----
+## Types / Interfaces
 
-## Interfaces
-
-Use
-
-```
-PascalCase
-```
-
-Example
+PascalCase:
 
 ```
 User
 
 Test
 
-Question
+LoginRequest
+
+ApiResponse
 ```
 
----
-
-## Types
-
-Suffix
-
-```
-Type
-```
-
-Example
+Suffix with `Type` for type aliases:
 
 ```
 UserType
@@ -279,29 +256,7 @@ UserType
 QuestionType
 ```
 
----
-
-## Enums
-
-Suffix
-
-```
-Enum
-```
-
-Example
-
-```
-DifficultyEnum
-
-StatusEnum
-```
-
----
-
 ## Files
-
-Examples
 
 ```
 login.api.ts
@@ -313,19 +268,21 @@ axios.ts
 authSlice.ts
 
 useTests.ts
+
+dashboard.mapper.ts
 ```
 
 ---
 
-# Git Workflow
+# 8. Git Workflow
 
-Main Branch
+Main Branch:
 
 ```
 main
 ```
 
-Feature Branch
+Feature Branch:
 
 ```
 feature/login
@@ -335,71 +292,49 @@ feature/dashboard
 feature/create-test
 
 feature/questions
-
-feature/publish-test
 ```
 
-Bug Fix
+Bug Fix:
 
 ```
-fix/login-error
-
 fix/dashboard-table
-```
 
-Documentation
-
-```
-docs/readme
-
-docs/api
+fix/test-creation-flow
 ```
 
 ---
 
-# Commit Convention
+# 9. Commit Convention
 
-Follow Conventional Commits.
-
-Examples
+Follow Conventional Commits:
 
 ```
 feat: add login page
 
-feat: implement dashboard
+feat: implement dashboard tests list
 
-feat: integrate tests API
+feat: add test creation flow
 
-feat: create question module
-
-feat: publish test workflow
-
-fix: handle unauthorized response
-
-fix: improve form validation
+fix: handle 401 unauthorized redirect
 
 refactor: simplify API service
 
 style: update responsive layout
 
-docs: update README
+docs: update API documentation
 
 chore: update dependencies
 ```
 
 ---
 
-# Component Guidelines
+# 10. Component Guidelines
 
 Each component should have a single responsibility.
 
-Preferred structure
+Preferred structure:
 
 ```
-Component
-
-↓
-
 Props
 
 ↓
@@ -419,74 +354,52 @@ JSX
 Export
 ```
 
-Example
+Example reusable components:
 
 ```
-PrimaryButton
+AppButton
 
-InputField
+AppTextFieldSimple
 
-Loader
+AppSelectField
 
-PageHeader
+AppMultiSelectField
 
-ConfirmDialog
+AppNumberField
 
-SearchBar
+AppRadioGroup
 
-StatusChip
+AppBreadcrumbs
+
+AppSearchField
+
+EmptyState
+
+PageLoader
+
+TestStatusChip
+
+TestActions
 ```
-
-Avoid creating components with excessive responsibilities.
 
 ---
 
-# Custom Hooks
-
-Business logic should live inside hooks.
-
-Example
-
-```
-useLogin()
-
-↓
-
-Login API
-
-↓
-
-Mutation
-
-↓
-
-Navigate
-```
-
-Benefits
-
-- Reusability
-- Cleaner Components
-- Easier Testing
-
----
-
-# API Guidelines
+# 11. API Guidelines
 
 Never call Axios directly from a page or component.
 
-Correct Flow
+Correct Flow:
 
 ```
 Component
 
 ↓
 
-Hook
+Feature Hook (calls createAsyncThunk)
 
 ↓
 
-API Service
+API Service (Axios call)
 
 ↓
 
@@ -497,245 +410,192 @@ Axios
 Backend
 ```
 
-Example
+Example:
 
 ```
-Dashboard
+CreateTestPage
 
 ↓
 
-useTests()
+useTestCreation().handleCreateTest()
 
 ↓
 
-tests.api.ts
+thunkCreateTest (createAsyncThunk)
 
 ↓
 
-axios.get()
+TestsApi.create()
+
+↓
+
+axios.post("/tests")
 ```
 
 ---
 
-# React Query Guidelines
+# 12. State Management — Redux Toolkit
 
-Queries
+## Feature Slices
 
-```
-Subjects
+Each feature has its own slice (`features/*/store/*.slice.ts`) and selectors.
 
-Topics
+## createAsyncThunk Pattern
 
-Tests
-
-Questions
-```
-
-Mutations
-
-```
-Create Test
-
-Update Test
-
-Publish Test
-
-Bulk Questions
-```
-
-Always invalidate affected queries after successful mutations.
-
----
-
-# Redux Guidelines
-
-Redux Toolkit should only store
-
-```
-Authentication
-
-Logged User
-
-Access Token
-
-Global UI
-```
-
-Do **not** store API data inside Redux.
-
-Use React Query for server state.
-
----
-
-# TypeScript Guidelines
-
-Strict mode is enabled.
-
-Avoid
+All API calls use `createAsyncThunk`:
 
 ```ts
-any
-```
+// 1. Define thunk in features/*/hooks/use*.ts
+export const thunkFetchSubjects = createAsyncThunk<
+  Subject[],
+  void,
+  { rejectValue: string }
+>("testCreation/fetchSubjects", async (_, { rejectWithValue }) => {
+  try {
+    const response = await SubjectsApi.getAll();
+    return response.data ?? [];
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
 
-Prefer
-
-```ts
-interface
-
-type
-
-enum
-```
-
-Use explicit return types where appropriate.
-
-Example
-
-```ts
-const getTests = async (): Promise<Test[]> => {
-  // implementation
+// 2. Handle in slice extraReducers
+extraReducers: (builder) => {
+  builder
+    .addCase(thunkFetchSubjects.pending, (state) => {
+      state.isLoading = true;
+    })
+    .addCase(thunkFetchSubjects.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.subjects = action.payload ?? [];
+    })
+    .addCase(thunkFetchSubjects.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload ?? "Failed to fetch subjects";
+    });
 };
 ```
 
+## Redux is used for ALL async data
+
+Do **not** use a separate caching library. Redux Toolkit state is the single source of truth for API data.
+
 ---
 
-# Form Guidelines
+# 13. TypeScript Guidelines
 
-All forms use
+Strict mode is enabled.
+
+Avoid `any`. Use explicit types:
+
+```ts
+// Bad
+const handleChange = (event: any) => { ... };
+
+// Good
+const handleChange = (event: SelectChangeEvent<string[]>) => { ... };
+```
+
+Define interfaces for all props and API responses.
+
+---
+
+# 14. Form Guidelines
+
+All forms use:
 
 - React Hook Form
-- Zod
+- Zod Resolver
 
-Validation should be schema-based.
-
-Do not manually validate forms inside components.
+Validation is schema-based. Do not manually validate inside components.
 
 ---
 
-# Styling Guidelines
+# 15. Styling Guidelines
 
-Use Material UI components wherever possible.
+Use Material UI components with the centralized theme.
 
-Avoid
+Centralize:
 
-- Inline styles
-- Magic numbers
-- Hardcoded colors
+- Colors → `src/theme/colors.ts`
+- Typography → `src/theme/typography.ts`
+- Spacing → `src/theme/spacing.ts`
 
-Centralize
-
-- Colors
-- Typography
-- Spacing
-- Breakpoints
-
-inside the theme.
+Avoid inline styles and hardcoded magic numbers.
 
 ---
 
-# Error Handling
+# 16. Error Handling
 
-Use centralized Axios interceptors.
+Use centralized Axios interceptors (`src/api/interceptors.ts`).
 
-Handle
+Handle:
 
 - Network Error
-- Unauthorized
+- Unauthorized (401 → auto logout)
 - Timeout
 - Validation Errors
 - Internal Server Error
 
-Display meaningful toast messages to users.
+Display meaningful toast messages via Notistack.
 
 ---
 
-# Performance Guidelines
-
-Follow these optimizations:
+# 17. Performance Guidelines
 
 - Lazy-loaded routes
 - Feature-based architecture
-- Code splitting
-- React Query caching
-- Memoize only when necessary
-- Reusable components
-- Debounced search
-- Efficient rendering
+- Code splitting via Vite
+- Memoize only when necessary (`React.memo`, `useMemo`, `useCallback`)
+- Debounced search inputs
+- Efficient Redux selectors (selectors are cheap — no need to memoize)
 
 ---
 
-# Security Guidelines
+# 18. Security Guidelines
 
 - Never commit `.env`
 - Never hardcode secrets
 - Use HTTPS endpoints
 - Validate all form inputs
-- Handle unauthorized requests
-- Store only the JWT token required for authentication
+- Handle unauthorized requests via Axios interceptor
 
 ---
 
-# Pull Request Checklist
+# 19. Pull Request Checklist
 
-Before submitting changes, verify:
+Before submitting:
 
-- Code builds successfully (`npm run build`)
-- ESLint passes (`npm run lint`)
-- No TypeScript errors
-- UI matches the design
-- Responsive layout verified
-- API integration tested
-- Error handling implemented
-- Loading states implemented
-- Empty states implemented
-- No unused imports or variables
-- Documentation updated (if required)
+- [ ] `npm run lint` passes
+- [ ] `npm run build` succeeds
+- [ ] No TypeScript errors
+- [ ] Loading states implemented
+- [ ] Empty/error states handled
+- [ ] No unused imports
+- [ ] Documentation updated (if new API/feature added)
 
 ---
 
-# Future Contributors
+# 20. Future Contributors
 
 When adding new features:
 
-- Follow the existing folder structure.
-- Keep features isolated within the `features/` directory.
-- Create reusable components where possible.
-- Add TypeScript types for all new data models.
-- Reuse the centralized Axios instance.
-- Use React Query for server state.
-- Update documentation when introducing new modules or APIs.
-
----
-
-# Code Review Checklist
-
-Reviewers should verify:
-
-- Readability
-- Maintainability
-- Naming consistency
-- Type safety
-- Performance
-- Accessibility
-- Responsive behavior
-- API abstraction
-- Error handling
-- Reusability
+- Follow the existing folder structure under `features/`
+- Keep features isolated
+- Create reusable components in `components/` where appropriate
+- Add TypeScript types for all new data models
+- Reuse the centralized Axios instance
+- Use Redux Toolkit `createAsyncThunk` for API calls
+- Update documentation when introducing new APIs or modules
 
 ---
 
 # Project Philosophy
 
-The project is designed around the following engineering principles:
-
 - Clean Architecture
-- Modular Design
 - Feature Isolation
-- Reusability
-- Maintainability
-- Scalability
 - Type Safety
+- Scalability
+- Maintainability
 - Performance
 - Developer Experience
-
-The goal is to keep the codebase easy to understand, easy to extend, and production-ready while following modern React and TypeScript best practices.

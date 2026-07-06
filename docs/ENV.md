@@ -8,16 +8,15 @@ This project uses **Vite Environment Variables** to manage application configura
 
 | File | Purpose |
 |------|---------|
-| `.env.example` | Template for all required environment variables. This file is committed to the repository. |
-| `.env` | Local development configuration. **Do not commit this file.** |
-| `.env.production` | Production-specific configuration used during deployment. |
-| `.env.local` | Local machine overrides (optional). Not committed. |
+| `.env.example` | Template with only required variables. Committed to repository. |
+| `.env` | Local development configuration. **Not committed.** |
+| `.env.production` | Production-specific configuration. Set on hosting platform (e.g., Vercel). |
 
 ---
 
 # Getting Started
 
-1. Copy the example file.
+1. Copy the example file:
 
 ```bash
 cp .env.example .env
@@ -29,47 +28,24 @@ cp .env.example .env
 
 # Environment Variables
 
+Only these variables are actually used in the codebase (`src/config/env.ts`):
+
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `VITE_APP_NAME` | Application name | `Preproute Test Management System` |
+| `VITE_APP_NAME` | Application name | `PrepRoute` |
 | `VITE_APP_ENV` | Current environment | `development` |
 | `VITE_API_URL` | Backend API Base URL | `https://admin-moderator-backend-staging.up.railway.app/api` |
-| `VITE_API_TIMEOUT` | API request timeout (ms) | `30000` |
-| `VITE_AUTH_TOKEN_KEY` | Local Storage key for JWT token | `preproute_token` |
-| `VITE_USER_STORAGE_KEY` | Local Storage key for user data | `preproute_user` |
-| `VITE_DEFAULT_PAGE_SIZE` | Default table page size | `10` |
-| `VITE_MAX_PAGE_SIZE` | Maximum page size | `100` |
-| `VITE_ENABLE_LOGGER` | Enable console logging | `true` |
-| `VITE_ENABLE_MOCK_API` | Enable mock APIs | `false` |
 | `VITE_APP_VERSION` | Application version | `1.0.0` |
-| `VITE_PUBLIC_URL` | Application URL | `http://localhost:5173` |
 
 ---
 
 # Example `.env.example`
 
 ```env
-###############################################################
-# Preproute Test Management System
-###############################################################
-
-VITE_APP_NAME=Preproute Test Management System
+VITE_APP_NAME=PrepRoute
 VITE_APP_ENV=development
-
 VITE_API_URL=https://admin-moderator-backend-staging.up.railway.app/api
-VITE_API_TIMEOUT=30000
-
-VITE_AUTH_TOKEN_KEY=preproute_token
-VITE_USER_STORAGE_KEY=preproute_user
-
-VITE_DEFAULT_PAGE_SIZE=10
-VITE_MAX_PAGE_SIZE=100
-
-VITE_ENABLE_LOGGER=true
-VITE_ENABLE_MOCK_API=false
-
 VITE_APP_VERSION=1.0.0
-VITE_PUBLIC_URL=http://localhost:5173
 ```
 
 ---
@@ -78,82 +54,53 @@ VITE_PUBLIC_URL=http://localhost:5173
 
 Vite exposes environment variables through `import.meta.env`.
 
-Example:
-
-```ts
-const apiUrl = import.meta.env.VITE_API_URL;
-```
-
-For better type safety, use a centralized configuration file.
-
-Example:
+The application uses a centralized access point:
 
 ```ts
 // src/config/env.ts
+import { ENV } from "@/config/env";
 
-export const env = {
-  appName: import.meta.env.VITE_APP_NAME,
-  appEnv: import.meta.env.VITE_APP_ENV,
-
-  apiUrl: import.meta.env.VITE_API_URL,
-  apiTimeout: Number(import.meta.env.VITE_API_TIMEOUT),
-
-  tokenKey: import.meta.env.VITE_AUTH_TOKEN_KEY,
-  userStorageKey: import.meta.env.VITE_USER_STORAGE_KEY,
-
-  defaultPageSize: Number(import.meta.env.VITE_DEFAULT_PAGE_SIZE),
-  maxPageSize: Number(import.meta.env.VITE_MAX_PAGE_SIZE),
-
-  enableLogger: import.meta.env.VITE_ENABLE_LOGGER === "true",
-  enableMockApi: import.meta.env.VITE_ENABLE_MOCK_API === "true",
-
-  appVersion: import.meta.env.VITE_APP_VERSION,
-  publicUrl: import.meta.env.VITE_PUBLIC_URL,
-} as const;
+const apiUrl = ENV.API_URL;
 ```
+
+Never use `import.meta.env` directly in component or service files — always go through `ENV`.
 
 ---
 
 # Deployment
 
-When deploying (for example, on Vercel), configure the same environment variables in the hosting platform.
+When deploying on Vercel, configure the same variables in the Vercel dashboard:
 
-Example:
-
-| Variable | Value |
-|----------|-------|
-| `VITE_API_URL` | `https://admin-moderator-backend-staging.up.railway.app/api` |
-| `VITE_APP_ENV` | `production` |
-| `VITE_PUBLIC_URL` | `https://your-app.vercel.app` |
+| Variable | Development | Production |
+|---------|-------------|------------|
+| `VITE_APP_ENV` | `development` | `production` |
+| `VITE_API_URL` | staging URL | production URL |
+| `VITE_APP_NAME` | `PrepRoute` | `PrepRoute` |
 
 ---
 
 # Security Notes
 
-- Never commit `.env` or `.env.production`.
-- Commit only `.env.example`.
-- Do not store secrets, passwords, or private keys in Vite environment variables, as they are exposed in the client bundle.
-- Use environment variables only for public configuration values such as API URLs and feature flags.
+- Never commit `.env` (it contains secrets)
+- Commit only `.env.example` with safe defaults
+- Do not store secrets or private keys in Vite environment variables — they are exposed in the client bundle
+- Use environment variables only for public configuration (API URLs, feature flags, app metadata)
 
 ---
 
 # Best Practices
 
-- Keep all environment variable names prefixed with `VITE_`.
-- Access variables through a centralized `env.ts` wrapper instead of using `import.meta.env` throughout the application.
-- Commit `.env.example` to document required variables.
-- Validate required environment variables during application startup.
-- Use different values for Development, Staging, and Production environments.
+- Keep all environment variable names prefixed with `VITE_`
+- Access variables through `src/config/env.ts` (typed wrapper) instead of `import.meta.env` directly
+- Commit `.env.example` to document required variables
+- Use different values for Development, Staging, and Production environments
 
 ---
 
 # Related Files
 
 ```text
-.env.example
-.env
-.env.production
-src/config/env.ts
+.env.example      — Variable template (committed)
+.env             — Local overrides (not committed)
+src/config/env.ts — Type-safe environment access
 ```
-
-This setup keeps configuration centralized, type-safe, and easy to manage across multiple deployment environments.

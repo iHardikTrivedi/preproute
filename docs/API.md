@@ -6,7 +6,7 @@
 
 This document describes the API integration used in the **Preproute Test Management System**.
 
-The application communicates with the backend through a centralized Axios client with JWT authentication and follows a service-based architecture for maintainability and scalability.
+The application communicates with the backend through a centralized Axios client with JWT authentication and follows a service-based architecture using Redux Toolkit `createAsyncThunk` for all async operations.
 
 ---
 
@@ -21,22 +21,22 @@ The application communicates with the backend through a centralized Axios client
 7. Authentication APIs
 8. Subject APIs
 9. Topic APIs
-10. Test APIs
-11. Question APIs
-12. Axios Configuration
-13. React Query Integration
+10. SubTopic APIs
+11. Test APIs
+12. Question APIs
+13. Axios Configuration
 14. HTTP Status Codes
 15. Best Practices
 
 ---
 
-# Base URL
+# 1. Base URL
 
 ```
 https://admin-moderator-backend-staging.up.railway.app/api
 ```
 
-Environment Variable
+Environment Variable:
 
 ```env
 VITE_API_URL=https://admin-moderator-backend-staging.up.railway.app/api
@@ -44,36 +44,32 @@ VITE_API_URL=https://admin-moderator-backend-staging.up.railway.app/api
 
 ---
 
-# Authentication
+# 2. Authentication
 
 All APIs except Login require a JWT token.
 
-Example
+Example:
 
 ```http
 Authorization: Bearer <JWT_TOKEN>
 ```
 
-The Authorization header is automatically added using an Axios Request Interceptor.
+The Authorization header is automatically added using an Axios Request Interceptor defined in `src/api/interceptors.ts`.
 
 ---
 
-# API Architecture
+# 3. API Architecture
 
 ```
-React Component
+Component
 
 ↓
 
-Custom Hook
+Feature Hook (calls createAsyncThunk)
 
 ↓
 
-React Query
-
-↓
-
-API Service
+API Service (Axios call)
 
 ↓
 
@@ -84,18 +80,22 @@ Axios Instance
 Backend API
 ```
 
-Example
+Example:
 
 ```
-Dashboard
+DashboardPage
 
 ↓
 
-useTests()
+useDashboard().fetchTests()
 
 ↓
 
-tests.api.ts
+thunkFetchTests (createAsyncThunk)
+
+↓
+
+DashboardApi.getTests()
 
 ↓
 
@@ -108,7 +108,7 @@ Backend
 
 ---
 
-# Standard API Response
+# 4. Standard API Response
 
 ## Success Response
 
@@ -119,8 +119,6 @@ Backend
   "message": "Success"
 }
 ```
-
----
 
 ## Error Response
 
@@ -133,7 +131,7 @@ Backend
 
 ---
 
-# Authentication APIs
+# 5. Authentication APIs
 
 ## Login
 
@@ -156,23 +154,29 @@ POST /auth/login
 
 ```json
 {
-  "success": true,
+  "status": "success",
+  "message": "Login successful",
   "data": {
     "token": "JWT_TOKEN",
-    "user": {}
+    "user": {
+      "id": "uuid",
+      "userId": "vedant-admin",
+      "name": "Admin",
+      "role": "admin"
+    }
   }
 }
 ```
 
-### React Query
+### Redux Thunk
 
 ```ts
-useMutation()
+thunkCreateTest // via useAuth().login()
 ```
 
 ---
 
-# Subjects API
+# 6. Subjects API
 
 ## Get All Subjects
 
@@ -196,15 +200,15 @@ GET /subjects
 }
 ```
 
-### React Query
+### Redux Thunk
 
 ```ts
-useQuery()
+thunkFetchSubjects
 ```
 
 ---
 
-# Topics API
+# 7. Topics API
 
 ## Get Topics by Subject
 
@@ -228,25 +232,30 @@ GET /topics/subject/123
   "data": [
     {
       "id": "uuid",
-      "name": "Algebra"
+      "name": "Algebra",
+      "subject_id": "uuid"
     }
   ]
 }
 ```
 
+### Redux Thunk
+
+```ts
+thunkFetchTopicsBySubject
+```
+
 ---
 
-# Sub Topics API
+# 8. Sub Topics API
 
-## Get Sub Topics
+## Get Sub Topics by Topic
 
 ### Endpoint
 
 ```
 GET /sub-topics/topic/:topicId
 ```
-
----
 
 ### Response
 
@@ -256,13 +265,12 @@ GET /sub-topics/topic/:topicId
   "data": [
     {
       "id": "uuid",
-      "name": "Linear Equations"
+      "name": "Linear Equations",
+      "topic_id": "uuid"
     }
   ]
 }
 ```
-
----
 
 ## Get Sub Topics for Multiple Topics
 
@@ -283,9 +291,15 @@ POST /sub-topics/multi-topics
 }
 ```
 
+### Redux Thunk
+
+```ts
+thunkFetchSubTopicsByTopic
+```
+
 ---
 
-# Tests API
+# 9. Tests API
 
 ## Get All Tests
 
@@ -295,15 +309,7 @@ POST /sub-topics/multi-topics
 GET /tests
 ```
 
-### React Query
-
-```ts
-useQuery()
-```
-
----
-
-## Response
+### Response
 
 ```json
 {
@@ -312,11 +318,30 @@ useQuery()
     {
       "id": "uuid",
       "name": "Mathematics Test",
+      "type": "chapterwise",
       "subject": "Mathematics",
-      "status": "draft"
+      "topics": ["uuid-1"],
+      "sub_topics": ["uuid-2"],
+      "questions": [],
+      "correct_marks": 5,
+      "wrong_marks": -1,
+      "unattempt_marks": 0,
+      "difficulty": "easy",
+      "total_marks": 100,
+      "total_time": 60,
+      "total_questions": 20,
+      "status": "draft",
+      "created_by": 1,
+      "created_at": "2024-01-01T00:00:00Z"
     }
   ]
 }
+```
+
+### Redux Thunk
+
+```ts
+thunkFetchTests // via dashboardSlice
 ```
 
 ---
@@ -327,12 +352,6 @@ useQuery()
 
 ```
 GET /tests/:id
-```
-
-### Example
-
-```
-GET /tests/123
 ```
 
 ---
@@ -351,29 +370,24 @@ POST /tests
 {
   "name": "Sample Test",
   "type": "chapterwise",
-  "subject": "subject-id",
-  "topics": [
-    "topic-1",
-    "topic-2"
-  ],
-  "sub_topics": [
-    "sub-topic-1"
-  ],
-  "correct_marks": 4,
+  "subject": "subject-uuid",
+  "topics": ["topic-uuid"],
+  "sub_topics": ["sub-topic-uuid"],
+  "correct_marks": 5,
   "wrong_marks": -1,
   "unattempt_marks": 0,
   "difficulty": "medium",
   "total_time": 60,
   "total_marks": 100,
   "total_questions": 25,
-  "status": null
+  "status": "draft"
 }
 ```
 
-### React Query
+### Redux Thunk
 
 ```ts
-useMutation()
+thunkCreateTest
 ```
 
 ---
@@ -391,36 +405,16 @@ PUT /tests/:id
 ```json
 {
   "name": "Updated Test",
-  "questions": [
-    "question-id-1",
-    "question-id-2"
-  ],
+  "questions": ["question-id-1"],
   "total_questions": 20,
-  "total_marks": 80
+  "total_marks": 80,
+  "status": "unpublished"
 }
 ```
 
 ---
 
-## Publish Test
-
-### Endpoint
-
-```
-PUT /tests/:id
-```
-
-### Request
-
-```json
-{
-  "status": "live"
-}
-```
-
----
-
-# Questions API
+# 10. Questions API
 
 ## Bulk Create Questions
 
@@ -450,15 +444,6 @@ POST /questions/bulk
 }
 ```
 
-### Response
-
-```json
-{
-  "success": true,
-  "message": "Successfully created questions"
-}
-```
-
 ---
 
 ## Fetch Questions
@@ -482,151 +467,129 @@ POST /questions/fetchBulk
 
 ---
 
-# Axios Configuration
+# 11. Axios Configuration
 
 ```
 src/api/axios.ts
 ```
 
-Responsibilities
+Responsibilities:
 
-- Base URL
+- Base URL from `VITE_API_URL`
 - JSON Headers
-- Timeout
-- Authorization Header
-- Request Interceptor
-- Response Interceptor
-
----
-
-# Request Interceptor
-
-Automatically adds
-
-```http
-Authorization: Bearer JWT_TOKEN
-```
-
----
-
-# Response Interceptor
-
-Handles
-
-```
-401 Unauthorized
-
-↓
-
-Clear Local Storage
-
-↓
-
-Logout User
-
-↓
-
-Navigate Login
-```
-
----
-
-# React Query Strategy
-
-## Queries
-
-| Resource | Hook |
-|------------|----------------|
-| Subjects | useSubjects |
-| Topics | useTopics |
-| Sub Topics | useSubTopics |
-| Tests | useTests |
-| Test Details | useTest |
-
----
-
-## Mutations
-
-| Resource | Hook |
-|------------|----------------|
-| Login | useLogin |
-| Create Test | useCreateTest |
-| Update Test | useUpdateTest |
-| Publish Test | usePublishTest |
-| Create Questions | useCreateQuestions |
-
----
-
-# Query Keys
-
-```
-subjects
-
-topics
-
-subTopics
-
-tests
-
-test
-
-questions
-```
-
-Example
+- Timeout (30s)
+- Request Interceptor (adds Bearer token)
+- Response Interceptor (handles 401 → logout)
 
 ```ts
-queryKey: ["tests"]
-```
-
----
-
-# Cache Invalidation
-
-After successful mutations
-
-```
-Create Test
-
-↓
-
-Invalidate
-
-↓
-
-tests
-```
-
-Example
-
-```ts
-queryClient.invalidateQueries({
-    queryKey: ["tests"]
+// src/api/axios.ts
+const api = axios.create({
+  baseURL: ENV.API_URL,
+  timeout: 30000,
+  headers: { "Content-Type": "application/json" },
 });
 ```
 
 ---
 
-# Error Handling
+# 12. Request Interceptor
 
-Centralized through Axios.
+Defined in `src/api/interceptors.ts`. Automatically adds:
 
-Handled Errors
+```http
+Authorization: Bearer JWT_TOKEN
+```
 
-- Network Error
-- Validation Error
-- Unauthorized
-- Server Error
-- Timeout
-
-Toast messages are displayed for user-friendly feedback.
+Also logs requests in development mode.
 
 ---
 
-# HTTP Status Codes
+# 13. Response Interceptor
+
+Handles `401 Unauthorized`:
+
+```
+401 Response
+
+↓
+
+Clear Token (localStorage)
+
+↓
+
+Dispatch clearAuth (Redux)
+
+↓
+
+Navigate /login
+```
+
+---
+
+# 14. State Management Pattern
+
+All API calls follow the Redux Toolkit `createAsyncThunk` pattern:
+
+```
+Feature Hook (thunk definition)
+
+↓
+
+createAsyncThunk (async thunk)
+
+↓
+
+API Service (Axios call)
+
+↓
+
+extraReducers (pending / fulfilled / rejected)
+
+↓
+
+Redux State
+```
+
+Example — fetching subjects:
+
+```ts
+// features/tests/hooks/useCreateTest.ts
+export const thunkFetchSubjects = createAsyncThunk<
+  Subject[],
+  void,
+  { rejectValue: string }
+>("testCreation/fetchSubjects", async (_, { rejectWithValue }) => {
+  try {
+    const response = await SubjectsApi.getAll();
+    return response.data ?? [];
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+// features/tests/store/testCreationSlice.ts
+extraReducers: (builder) => {
+  builder
+    .addCase(thunkFetchSubjects.pending, (state) => {
+      state.isLoading = true;
+    })
+    .addCase(thunkFetchSubjects.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.subjects = action.payload ?? [];
+    })
+    .addCase(thunkFetchSubjects.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload ?? "Failed to fetch subjects";
+    });
+};
+```
+
+---
+
+# 15. HTTP Status Codes
 
 | Status | Meaning |
-|---------|----------|
+|--------|---------|
 | 200 | Success |
 | 201 | Created |
 | 400 | Bad Request |
@@ -638,59 +601,64 @@ Toast messages are displayed for user-friendly feedback.
 
 ---
 
-# Best Practices
+# 16. Error Handling
 
-The API layer follows the following guidelines:
+Centralized through Axios interceptors.
+
+Handled Errors:
+
+- Network Error
+- Validation Error
+- Unauthorized (401 → auto logout)
+- Server Error
+- Timeout
+
+Toast messages are displayed via Notistack.
+
+---
+
+# 17. Best Practices
+
+The API layer follows these guidelines:
 
 - Centralized Axios instance
 - No direct Axios calls inside components
-- React Query for server state
+- Redux Toolkit `createAsyncThunk` for all async operations
 - Strong TypeScript models
 - Reusable API service functions
 - Automatic authentication headers
-- Centralized error handling
-- Query invalidation after mutations
+- Centralized error handling via interceptors
 - Environment-based API URLs
 - Separation of API logic from UI components
 
 ---
 
-# API Folder Structure
+# 18. API Folder Structure
 
 ```
 src/
-
 api/
-
-    axios.ts
-
-    endpoints.ts
-
-    interceptors.ts
+    axios.ts           # Axios instance
+    endpoints.ts      # ENDPOINTS constants
+    interceptors.ts    # Auth & error interceptors
+    logger.ts         # Dev logging
+    types.ts          # ApiResponse, ApiError
 
 features/
-
     auth/
-
         api/
-
             auth.api.ts
-
+    dashboard/
+        api/
+            dashboard.api.ts
     tests/
-
         api/
-
             tests.api.ts
-
             subjects.api.ts
-
             topics.api.ts
-
+            subtopics.api.ts
     questions/
-
-        api/
-
-            questions.api.ts
+        (no API files yet)
 ```
 
 ---
@@ -707,4 +675,4 @@ The API layer is designed to be:
 - Easy to test
 - Production-ready
 
-By separating API communication from UI components and leveraging Axios with TanStack Query, the application remains clean, predictable, and easy to extend as new backend features are introduced.
+All API communication flows through Axios interceptors with automatic JWT handling, and async operations use Redux Toolkit's `createAsyncThunk` pattern for consistent loading and error state management across the application.

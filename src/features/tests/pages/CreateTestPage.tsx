@@ -69,6 +69,7 @@ const CreateTestPage = () => {
   } = useTestCreation();
 
   // Load test data for editing when editTest is provided
+  // Reset form when transitioning from edit mode to create mode (editTest goes from truthy → falsy)
   useEffect(() => {
     if (editTest) {
       loadTestForEditing({
@@ -86,11 +87,14 @@ const CreateTestPage = () => {
         wrongMarks: String(editTest.wrongMarks),
         unattemptMarks: String(editTest.unattemptMarks),
       });
+    } else {
+      // Create mode — reset form fields but keep subjects dropdown cached
+      handleResetForm();
     }
     return () => {
       clearEditingTest();
     };
-  }, [editTest, loadTestForEditing, clearEditingTest]);
+  }, [editTest, loadTestForEditing, clearEditingTest, handleResetForm]);
 
   useEffect(() => {
     // Only fetch subjects if not already loaded

@@ -1,6 +1,13 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
 import type { Subject, SubTopic, Test, Topic } from "../types/tests.types";
+
+import {
+  thunkFetchSubjects,
+  thunkFetchTopicsBySubject,
+  thunkFetchTopicsBySubjects,
+  thunkFetchSubTopicsByTopic,
+  thunkCreateTest,
+} from "../hooks/useCreateTest";
 
 export interface TestCreationState {
   // Dropdown data
@@ -220,6 +227,8 @@ const testCreationSlice = createSlice({
       state.selectedSubjectId = "";
       state.selectedTopicIds = [];
       state.selectedSubTopicIds = [];
+      state.topics = [];
+      state.subTopics = [];
       state.name = "";
       state.type = "chapterwise";
       state.difficulty = "easy";
@@ -257,6 +266,84 @@ const testCreationSlice = createSlice({
     clearTestCreation(state) {
       Object.assign(state, initialState);
     },
+  },
+
+  extraReducers: (builder) => {
+    // Fetch subjects
+    builder
+      .addCase(thunkFetchSubjects.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(thunkFetchSubjects.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.subjects = action.payload ?? [];
+      })
+      .addCase(thunkFetchSubjects.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload ?? "Failed to fetch subjects";
+      });
+
+    // Fetch topics by subject
+    builder
+      .addCase(thunkFetchTopicsBySubject.pending, (state) => {
+        state.isLoadingTopics = true;
+        state.error = null;
+      })
+      .addCase(thunkFetchTopicsBySubject.fulfilled, (state, action) => {
+        state.isLoadingTopics = false;
+        state.topics = action.payload ?? [];
+      })
+      .addCase(thunkFetchTopicsBySubject.rejected, (state, action) => {
+        state.isLoadingTopics = false;
+        state.error = action.payload ?? "Failed to fetch topics";
+      });
+
+    // Fetch topics by multiple subjects
+    builder
+      .addCase(thunkFetchTopicsBySubjects.pending, (state) => {
+        state.isLoadingTopics = true;
+        state.error = null;
+      })
+      .addCase(thunkFetchTopicsBySubjects.fulfilled, (state, action) => {
+        state.isLoadingTopics = false;
+        state.topics = action.payload ?? [];
+      })
+      .addCase(thunkFetchTopicsBySubjects.rejected, (state, action) => {
+        state.isLoadingTopics = false;
+        state.error = action.payload ?? "Failed to fetch topics";
+      });
+
+    // Fetch sub-topics by topic IDs
+    builder
+      .addCase(thunkFetchSubTopicsByTopic.pending, (state) => {
+        state.isLoadingSubTopics = true;
+        state.error = null;
+      })
+      .addCase(thunkFetchSubTopicsByTopic.fulfilled, (state, action) => {
+        state.isLoadingSubTopics = false;
+        state.subTopics = action.payload ?? [];
+      })
+      .addCase(thunkFetchSubTopicsByTopic.rejected, (state, action) => {
+        state.isLoadingSubTopics = false;
+        state.error = action.payload ?? "Failed to fetch sub-topics";
+      });
+
+    // Create test
+    builder
+      .addCase(thunkCreateTest.pending, (state) => {
+        state.isCreating = true;
+        state.error = null;
+      })
+      .addCase(thunkCreateTest.fulfilled, (state, action) => {
+        state.isCreating = false;
+        state.createdTest = action.payload;
+        state.error = null;
+      })
+      .addCase(thunkCreateTest.rejected, (state, action) => {
+        state.isCreating = false;
+        state.error = action.payload ?? "Failed to create test";
+      });
   },
 });
 

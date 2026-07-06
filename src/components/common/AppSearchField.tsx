@@ -6,7 +6,8 @@ import React from "react";
 const AppSearchField = (props: TextFieldProps) => {
   const value = props.value as string | undefined;
 
-  const providedInput = (props.slotProps && (props.slotProps as any).input) || {};
+  const providedInput =
+    (props.slotProps && "input" in props.slotProps ? props.slotProps.input : undefined) || {};
 
   const inputSlotProps = {
     ...providedInput,

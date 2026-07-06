@@ -29,27 +29,22 @@ The project is designed using modern React development practices with a strong e
 7. Authentication Flow
 8. State Management
 9. API Layer
-10. React Query Strategy
-11. Component Architecture
-12. Form Architecture
-13. Data Flow
-14. Error Handling
-15. Performance Optimization
-16. Security
-17. Scalability
-18. Future Improvements
+10. Component Architecture
+11. Form Architecture
+12. Data Flow
+13. Error Handling
+14. Performance Optimization
+15. Security
+16. Scalability
+17. Future Improvements
 
 ---
 
 # 1. Architecture Principles
 
-The application follows the following principles.
-
 ## Separation of Concerns
 
 Each feature is responsible only for its own functionality.
-
-Example
 
 ```
 Authentication
@@ -60,11 +55,11 @@ Login Page
 
 ↓
 
-Login Hook
+useLogin Hook
 
 ↓
 
-Auth API
+AuthApi
 
 ↓
 
@@ -75,15 +70,20 @@ Axios
 
 ## Reusability
 
-Reusable UI Components
+Reusable UI Components:
 
 - Button
 - Input
-- Select
+- Select / MultiSelect
 - Loader
 - Dialog
 - Table
 - Empty State
+- Breadcrumbs
+- Search Field
+- Number Field
+- Radio Group
+- Password Field
 
 Business logic is extracted into custom hooks.
 
@@ -91,27 +91,15 @@ Business logic is extracted into custom hooks.
 
 ## Type Safety
 
-The project uses TypeScript Strict Mode.
+The project uses TypeScript Strict Mode. No usage of `any`.
 
-No usage of
-
-```
-any
-```
-
-Interfaces and Types are defined inside
-
-```
-features/*/types
-```
+Interfaces and Types are defined inside `features/*/types` and `src/types/`.
 
 ---
 
 ## Single Responsibility Principle
 
 Each module performs one responsibility only.
-
-Example
 
 ```
 LoginForm
@@ -130,7 +118,7 @@ Call Login API
 
 -------------------------
 
-Auth API
+AuthApi
 
 ↓
 
@@ -142,7 +130,7 @@ HTTP Request
 # 2. Technology Stack
 
 | Layer | Technology |
-|---------|-------------|
+|-------|-------------|
 | Framework | React 19 |
 | Language | TypeScript |
 | Build Tool | Vite |
@@ -151,9 +139,10 @@ HTTP Request
 | Forms | React Hook Form |
 | Validation | Zod |
 | Global State | Redux Toolkit |
-| Server State | TanStack Query |
 | HTTP | Axios |
-| Notifications | Sonner |
+| Notifications | Notistack |
+| Date Handling | Day.js |
+| Icons | MUI Icons |
 
 ---
 
@@ -188,7 +177,9 @@ Feature Modules
 
 ▼                 ▼
 
-Redux       React Query
+Redux        Redux Toolkit
+
+          (createAsyncThunk)
 
                   │
 
@@ -217,85 +208,128 @@ Redux       React Query
 src/
 
 ├── api/
-│
+│   ├── axios.ts          # Axios instance
+│   ├── endpoints.ts      # API endpoint constants
+│   ├── interceptors.ts   # Auth & error interceptors
+│   ├── logger.ts         # Dev logging
+│   └── types.ts          # Shared API types
+
 ├── app/
-│
-├── assets/
-│
+│   ├── providers/         # AuthProvider, ReduxProvider, ThemeProvider
+│   ├── router/           # AppRouter, ProtectedRoute, routes
+│   └── store/            # Redux store, rootReducer, selectors
+
 ├── components/
-│
-├── constants/
-│
+│   ├── common/            # AppBreadcrumbs, AppButton, AppLogo, AppSearchField, etc.
+│   ├── feedback/         # Loader
+│   └── form/             # AppTextFieldSimple, AppSelectField, AppMultiSelectField,
+│                         # AppNumberField, AppRadioGroup, AppPasswordField, etc.
+
+├── config/
+│   ├── env.ts            # Environment variable access
+│   ├── queryKeys.ts      # Query key constants
+│   └── messages.ts       # UI messages
+
 ├── features/
-│
 │   ├── auth/
+│   │   ├── api/          # AuthApi
+│   │   ├── hooks/        # useAuth, useLogin
+│   │   ├── pages/        # LoginPage
+│   │   ├── store/        # authSlice
+│   │   ├── types/        # auth.types
+│   │   └── schemas/      # login.schema
 │   │
 │   ├── dashboard/
+│   │   ├── api/          # DashboardApi
+│   │   ├── components/    # TestTable, TestTableHead, TestTableRow, etc.
+│   │   ├── hooks/         # useDashboard, useGetTests
+│   │   ├── mappers/      # dashboard.mapper
+│   │   ├── pages/         # DashboardPage
+│   │   ├── store/         # dashboardSlice
+│   │   └── types/         # dashboard.types, dashboard-api.types
 │   │
 │   ├── tests/
+│   │   ├── api/          # TestsApi, SubjectsApi, TopicsApi, SubTopicsApi
+│   │   ├── components/    # TestTabs, TestStatusChip, TestActions
+│   │   ├── hooks/         # useTestCreation, useCreateTest, useSubjects, useTopics
+│   │   ├── pages/         # CreateTestPage
+│   │   ├── store/         # testCreationSlice, selectors
+│   │   ├── types/         # tests.types
+│   │   └── constants.ts   # DIFFICULTY_OPTIONS
 │   │
-│   ├── questions/
-│   │
-│   └── preview/
-│
+│   └── questions/
+│       └── pages/         # QuestionsPage
+
 ├── hooks/
-│
+│   ├── redux.ts           # useAppDispatch, useAppSelector
+│   ├── useNotification.ts # notistack wrapper
+│   ├── useDebounce.ts
+│   └── useDisclosure.ts
+
 ├── layouts/
-│
-├── routes/
-│
-├── store/
-│
-├── styles/
-│
+│   ├── AuthLayout
+│   └── DashboardLayout
+
 ├── theme/
-│
+│   ├── theme.ts          # MUI theme
+│   ├── colors.ts
+│   ├── typography.ts
+│   ├── palette.ts
+│   ├── shadows.ts
+│   └── spacing.ts
+
 ├── types/
-│
-└── utils/
+│   ├── api.ts            # ApiResponse, ApiError, Pagination
+│   ├── auth.ts
+│   └── common.ts
+
+├── utils/
+│   ├── apiError.ts       # API error helper
+│   └── storageService.ts # localStorage wrapper
+
+└── main.tsx
 ```
 
 ---
 
 # 5. Feature-Based Architecture
 
-Instead of grouping files by type, the project groups them by business feature.
+Each feature groups all related files — API, hooks, components, pages, store, and types — in one directory.
 
 ```
 features/
 
     auth/
+        api/          # AuthApi singleton
+        hooks/        # useAuth, useLogin
+        pages/        # LoginPage
+        store/        # authSlice.ts + selectors
+        types/        # auth.types.ts
+        schemas/      # login.schema.ts
 
-        api/
-
-        hooks/
-
-        pages/
-
-        schema/
-
-        types/
+    dashboard/
+        api/          # DashboardApi
+        components/   # TestTable, TestTableRow, TestStatusChip, etc.
+        hooks/        # useDashboard, useGetTests
+        mappers/     # dashboard.mapper
+        pages/        # DashboardPage
+        store/        # dashboardSlice + selectors
+        types/        # dashboard.types, dashboard-api.types
 
     tests/
-
-        api/
-
-        hooks/
-
-        pages/
-
-        components/
-
-        schema/
-
-        types/
+        api/          # TestsApi, SubjectsApi, TopicsApi, SubTopicsApi
+        components/   # TestTabs, TestStatusChip, TestActions
+        hooks/        # useTestCreation, useCreateTest, useSubjects, useTopics
+        pages/        # CreateTestPage
+        store/       # testCreationSlice + selectors
+        types/       # tests.types
+        constants.ts  # DIFFICULTY_OPTIONS
 
     questions/
-
-    preview/
+        pages/        # QuestionsPage
 ```
 
-Advantages
+**Advantages:**
 
 - Better scalability
 - Easier maintenance
@@ -323,18 +357,18 @@ Dashboard
 
 ↓
 
-Create Test
+Create Test / Edit Test
 
 ↓
 
-Questions
+Questions (after test creation)
 
 ↓
 
-Preview
+Dashboard (after save/cancel)
 ```
 
-Routes
+Routes:
 
 ```
 /
@@ -346,8 +380,6 @@ Routes
 /tests/:id/edit
 
 /tests/:id/questions
-
-/tests/:id/preview
 ```
 
 Protected routes verify JWT authentication before rendering.
@@ -369,15 +401,11 @@ JWT Token
 
 ↓
 
-Store Token
+Store Token (localStorage)
 
 ↓
 
 Redux Store
-
-↓
-
-Local Storage
 
 ↓
 
@@ -388,24 +416,18 @@ Axios Request Interceptor
 Protected APIs
 ```
 
-If
+If `401 Unauthorized`:
 
 ```
-401 Unauthorized
-```
+Remove Token (localStorage)
 
 ↓
 
-```
-Remove Token
+Clear Redux Auth State
 
 ↓
 
-Logout User
-
-↓
-
-Navigate Login
+Navigate to /login
 ```
 
 ---
@@ -414,45 +436,38 @@ Navigate Login
 
 ## Redux Toolkit
 
-Stores
+Redux Toolkit handles **all** async data via `createAsyncThunk`:
 
 ```
-Authentication
+API Service
 
-User
+↓
 
-Token
+createAsyncThunk (in feature hooks)
 
-Application UI
+↓
+
+extraReducers (pending / fulfilled / rejected)
+
+↓
+
+Redux State
 ```
 
-Redux is intentionally **not** used for API data.
+**Stores:**
 
----
+- `authSlice` — token, user, loading/error
+- `dashboardSlice` — tests list, loading/error
+- `testCreationSlice` — form fields, dropdown data (subjects/topics/subtopics), loading states, edit mode
 
-## React Query
+## Why Redux Toolkit for API Data?
 
-Responsible for
+All API calls use Redux Toolkit's `createAsyncThunk` pattern:
 
-```
-Subjects
-
-Topics
-
-Tests
-
-Questions
-
-Sub Topics
-```
-
-Benefits
-
-- Automatic Caching
-- Refetching
-- Cache Invalidation
-- Loading State
-- Error State
+- Async thunks defined in feature hooks
+- Slice `extraReducers` handle pending/fulfilled/rejected lifecycle
+- No separate caching library needed — Redux state IS the cache
+- Loading, error, and data states all co-located per feature
 
 ---
 
@@ -465,11 +480,11 @@ Page
 
 ↓
 
-Custom Hook
+Feature Hook (calls thunk)
 
 ↓
 
-API Service
+API Service (Axios call)
 
 ↓
 
@@ -480,25 +495,29 @@ Axios
 Backend
 ```
 
-Example
+Example:
 
 ```
-Dashboard
+CreateTestPage
 
 ↓
 
-useTests()
+useTestCreation().handleCreateTest()
 
 ↓
 
-tests.api.ts
+thunkCreateTest (createAsyncThunk)
 
 ↓
 
-axios.get("/tests")
+TestsApi.create()
+
+↓
+
+axios.post("/tests", payload)
 ```
 
-Benefits
+Benefits:
 
 - Easier testing
 - Centralized error handling
@@ -521,11 +540,7 @@ Headers
 
 ↓
 
-JWT Token
-
-↓
-
-Request Interceptor
+JWT Token (Request Interceptor)
 
 ↓
 
@@ -533,75 +548,24 @@ Backend
 
 ↓
 
-Response Interceptor
-
-↓
-
-Handle Errors
+Response Interceptor (401 → logout)
 ```
 
-Responsibilities
+Responsibilities:
 
-- Base URL
-- Authorization Header
-- Timeout
-- Response Errors
-- Logout on 401
+- Base URL from environment
+- Authorization Header (Bearer token)
+- Timeout (30s)
+- 401 auto-logout
 
 ---
 
-# 11. React Query Architecture
+# 11. Form Architecture
+
+All forms follow:
 
 ```
-Component
-
-↓
-
-useQuery
-
-↓
-
-API Service
-
-↓
-
-Axios
-
-↓
-
-Backend
-
-↓
-
-Cache
-
-↓
-
-Component Update
-```
-
-Mutations
-
-```
-Create
-
-↓
-
-Invalidate Query
-
-↓
-
-Automatic Refresh
-```
-
----
-
-# 12. Form Architecture
-
-All forms follow
-
-```
-Form Component
+Form Component (JSX)
 
 ↓
 
@@ -617,14 +581,14 @@ Validation
 
 ↓
 
-Mutation
+createAsyncThunk Mutation
 
 ↓
 
 API
 ```
 
-Benefits
+Benefits:
 
 - Less Re-rendering
 - Better Performance
@@ -633,7 +597,7 @@ Benefits
 
 ---
 
-# 13. Component Architecture
+# 12. Component Architecture
 
 ```
 Page
@@ -644,38 +608,50 @@ Feature Components
 
 ↓
 
-Shared Components
+Shared Components (AppButton, AppTextFieldSimple, etc.)
 
 ↓
 
 Material UI
 ```
 
-Reusable Components
+Reusable Components:
 
 ```
-Button
+AppButton
 
-Input
+AppTextFieldSimple
 
-Select
+AppSelectField
 
-Loader
+AppMultiSelectField
 
-Dialog
+AppNumberField
 
-Chip
+AppRadioGroup
 
-Search
+AppPasswordField
 
-Table
+AppBreadcrumbs
 
-Card
+AppSearchField
+
+AppLogo
+
+AppNoResultFound
+
+PageLoader
+
+EmptyState
+
+TestStatusChip
+
+TestActions
 ```
 
 ---
 
-# 14. Data Flow
+# 13. Data Flow
 
 ```
 Backend
@@ -686,15 +662,19 @@ Axios
 
 ↓
 
-API Layer
+API Service
 
 ↓
 
-React Query
+createAsyncThunk
 
 ↓
 
-Feature Hook
+extraReducers (Redux)
+
+↓
+
+Feature Hook (useTestCreation, etc.)
 
 ↓
 
@@ -705,18 +685,22 @@ Component
 UI
 ```
 
-Example
+Example — Dashboard loads tests:
 
 ```
-Dashboard
+DashboardPage
 
 ↓
 
-useTests()
+useDashboard().updateTests()
 
 ↓
 
-tests.api.ts
+thunkFetchTests (createAsyncThunk)
+
+↓
+
+DashboardApi.getTests()
 
 ↓
 
@@ -724,25 +708,25 @@ GET /tests
 
 ↓
 
-React Query Cache
+Redux: dashboardSlice (pending → fulfilled)
 
 ↓
 
-Dashboard Table
+useAppSelector(selectDashboard)
+
+↓
+
+TestTable renders
 ```
 
 ---
 
-# 15. Error Handling
+# 14. Error Handling
 
-Centralized strategy.
+Centralized strategy:
 
 ```
-Axios
-
-↓
-
-Response Error
+Axios Response Error
 
 ↓
 
@@ -750,91 +734,70 @@ Interceptor
 
 ↓
 
-Toast
+Toast (notistack)
 
 ↓
 
 User Friendly Message
 ```
 
-Handled Errors
+Handled Errors:
 
 - Network Failure
-- Unauthorized
+- Unauthorized (401 → redirect)
 - Validation Errors
 - Server Errors
 - Timeout
 
 ---
 
-# 16. Performance Optimization
+# 15. Performance Optimization
 
-Implemented
+Implemented:
 
-- Lazy Loaded Routes
-- Route Code Splitting
-- React Query Cache
-- Query Invalidation
-- Optimized Bundle with Vite
-- Strict TypeScript
-- Reusable Components
-- Memoization where beneficial
+- Route Code Splitting (lazy loaded pages)
+- React.memo for expensive components
+- useMemo / useCallback where necessary
 - Debounced Search
 - Centralized API Layer
+- Optimized Bundle with Vite
+- Strict TypeScript
 
 ---
 
-# 17. Security
+# 16. Security
 
-Implemented
+## JWT Authentication
 
-## Authentication
+Token stored in localStorage, attached to every request via Axios interceptor.
 
-JWT Authentication
+## Protected Routes
 
----
-
-## Authorization
-
-Protected Routes
-
----
+`ProtectedRoute` checks for valid token before rendering.
 
 ## Environment Variables
 
-Sensitive values stored in
-
-```
-.env
-```
-
----
+Sensitive values stored in `.env` (not committed).
 
 ## Request Interceptor
 
-Automatically attaches
+Automatically attaches:
 
 ```
 Authorization: Bearer <token>
 ```
 
----
-
 ## Response Interceptor
 
-Automatically logs out user on
-
-```
-401 Unauthorized
-```
+Automatically logs out user on `401 Unauthorized`.
 
 ---
 
-# 18. Scalability
+# 17. Scalability
 
 The architecture supports future features.
 
-Possible enhancements
+Possible enhancements:
 
 ```
 Admin Roles
@@ -843,15 +806,11 @@ Student Roles
 
 Teacher Roles
 
-Question Categories
+Question Bank
 
 Media Upload
 
 Analytics Dashboard
-
-Pagination
-
-Search Filters
 
 Dark Theme
 
@@ -864,8 +823,6 @@ E2E Testing
 Offline Support
 
 PWA
-
-Micro Frontend Migration
 ```
 
 ---
@@ -876,31 +833,21 @@ Micro Frontend Migration
 
 Compared with grouping by file type, feature-based architecture keeps all files related to a business domain together, making the application easier to scale and maintain.
 
----
+## Why Redux Toolkit for API Data?
 
-## Why React Query Instead of Redux for API Data?
-
-Server state changes frequently and benefits from caching, automatic refetching, and query invalidation. React Query provides these capabilities out of the box, reducing boilerplate and improving performance.
-
----
-
-## Why Redux Toolkit?
-
-Redux Toolkit is reserved for global client-side state such as authentication and UI preferences, keeping responsibilities clearly separated from server state.
-
----
+Redux Toolkit with `createAsyncThunk` provides a unified pattern for all async operations. Loading states, error states, and data are all managed in one place per feature, with no additional caching library required.
 
 ## Why Axios?
 
 Axios provides centralized configuration, interceptors, automatic authorization header injection, and consistent error handling across all API requests.
 
----
-
 ## Why React Hook Form + Zod?
 
 This combination provides high-performance forms with minimal re-renders and type-safe validation that integrates naturally with TypeScript.
 
----
+## Why Notistack?
+
+Notistack is used for toast notifications. It allows displaying stacked snackbars without requiring imperative API calls — driven by Redux or component state.
 
 ## Summary
 

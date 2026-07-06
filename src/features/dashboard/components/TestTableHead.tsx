@@ -1,10 +1,34 @@
-import { TableCell, TableHead, TableRow } from "@mui/material";
+import { Box, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 
 import { COLORS } from "@/theme/colors";
 
 import { TEST_TABLE_COLUMNS } from "../constants";
 
-const TestTableHead = () => {
+interface Filters {
+  subject?: string;
+  status?: string;
+  sortCreated?: "asc" | "desc";
+}
+
+interface TestTableHeadProps {
+  subjects?: string[];
+  statuses?: string[];
+  filters?: Filters;
+  onFilterChange?: (next: Filters) => void;
+  searchQuery?: string;
+  onReset?: () => void;
+  showFilters?: boolean;
+}
+
+const TestTableHead = ({
+  subjects = [],
+  statuses = [],
+  filters = {},
+  onFilterChange,
+  searchQuery,
+  onReset,
+  showFilters,
+}: TestTableHeadProps) => {
   return (
     <TableHead>
       <TableRow>

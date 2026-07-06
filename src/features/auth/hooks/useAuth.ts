@@ -47,7 +47,7 @@ export const useAuth = () => {
     navigate(ROUTES.LOGIN, {
       replace: true,
     });
-  }, [dispatch, navigate]);
+  }, [dispatch, navigate, notification]);
 
   return {
     ...auth,

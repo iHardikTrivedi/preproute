@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { useNotification } from "@/hooks/useNotification";
@@ -52,6 +52,8 @@ import {
   setSelectedSubTopicIds,
   setSelectedTopicIds,
   setShouldOpenSubTopicsDropdown,
+  setSubTopics,
+  setTopics,
   setTotalMarks,
   setTotalQuestions,
   setTotalTime,
@@ -90,13 +92,20 @@ export const useTestCreation = () => {
   const shouldOpenSubTopicsDropdown = useAppSelector(selectShouldOpenSubTopicsDropdown);
   const editingTestId = useAppSelector(selectEditingTestId);
 
+  // Track whether we are in the edit-load cascade (subject → topics → subtopics)
+  const isEditingTopicsLoading = useRef(false);
+  const isEditingSubTopicsLoading = useRef(false);
+  // Store the IDs we need to pre-select (they get set into state when the cascade completes)
+  const editTopicIds = useRef<string[]>([]);
+  const editSubTopicIds = useRef<string[]>([]);
+
   // Actions
   const fetchSubjects = useCallback(() => {
     dispatch(thunkFetchSubjects());
   }, [dispatch]);
 
   const loadTestForEditing = useCallback(
-    async (test: {
+    (test: {
       id: string;
       name: string;
       type: string;
@@ -111,31 +120,87 @@ export const useTestCreation = () => {
       wrongMarks: string;
       unattemptMarks: string;
     }) => {
-      // First, set the form data
+      // Store target IDs to pre-select once dropdown data loads
+      editTopicIds.current = test.topics;
+      editSubTopicIds.current = test.subTopics;
+
+      // Load form fields: name, difficulty, marks, etc.
       dispatch(loadTestForEdit(test));
-      // Then fetch topics for the subject
-      await dispatch(thunkFetchTopicsBySubject(test.subject));
-      // Fetch subtopics for the topics
-      if (test.topics.length > 0) {
-        await dispatch(thunkFetchSubTopicsByTopic(test.topics));
-      }
+
+      // Kick off the cascade: set subject → fetch topics → fetch subtopics
+      isEditingTopicsLoading.current = true;
+      dispatch(thunkFetchTopicsBySubject(test.subject));
     },
-    [dispatch]
+    [dispatch],
   );
+
+  // Cascade step 1: topics fetched → now fetch subtopics
+  useEffect(() => {
+    if (!isEditingTopicsLoading.current) return;
+    if (topics.length === 0) return;
+
+    isEditingTopicsLoading.current = false;
+    isEditingSubTopicsLoading.current = true;
+
+    if (editTopicIds.current.length > 0) {
+      dispatch(thunkFetchSubTopicsByTopic(editTopicIds.current));
+    } else {
+      // No topics to load subtopics for
+      isEditingSubTopicsLoading.current = false;
+    }
+  }, [topics.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Cascade step 2: subtopics fetched → restore the pre-selected IDs into dropdown state
+  useEffect(() => {
+    if (!isEditingSubTopicsLoading.current) return;
+    if (subTopics.length === 0) return;
+
+    isEditingSubTopicsLoading.current = false;
+
+    // Re-apply the topic and subtopic selections so dropdowns show the checkmarks
+    if (editTopicIds.current.length > 0) {
+      dispatch(setSelectedTopicIds(editTopicIds.current));
+    }
+    if (editSubTopicIds.current.length > 0) {
+      dispatch(setSelectedSubTopicIds(editSubTopicIds.current));
+    }
+  }, [subTopics.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const clearEditingTest = useCallback(() => {
     dispatch(setEditingTestId(null));
+    // Reset cascade state
+    isEditingTopicsLoading.current = false;
+    isEditingSubTopicsLoading.current = false;
+    editTopicIds.current = [];
+    editSubTopicIds.current = [];
   }, [dispatch]);
 
   const handleSubjectChange = useCallback(
     (subjectId: string) => {
       dispatch(setSelectedSubjectId(subjectId));
-      if (subjectId) {
-        dispatch(thunkFetchTopicsBySubject(subjectId));
-      }
+      // Clear topics and subtopics when subject changes
+      dispatch(setTopics([]));
+      dispatch(setSubTopics([]));
+      dispatch(setSelectedTopicIds([]));
+      dispatch(setSelectedSubTopicIds([]));
     },
     [dispatch],
   );
+
+  // Cascade: selectedSubjectId changed → fetch topics (normal user flow only)
+  useEffect(() => {
+    if (!selectedSubjectId) return;
+    if (topics.length > 0) return; // already loaded
+    dispatch(thunkFetchTopicsBySubject(selectedSubjectId));
+  }, [selectedSubjectId, topics.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Cascade: topics loaded (normal user flow) → fetch subtopics
+  useEffect(() => {
+    if (isEditingSubTopicsLoading.current) return; // skip, edit cascade handles it
+    if (topics.length === 0) return;
+    if (selectedTopicIds.length === 0) return; // no topic selected yet
+    dispatch(thunkFetchSubTopicsByTopic(selectedTopicIds));
+  }, [topics.length, selectedTopicIds.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleTopicChange = useCallback(
     (topicIds: string[]) => {
@@ -148,13 +213,9 @@ export const useTestCreation = () => {
 
   const handleSubTopicChange = useCallback(
     (subTopicIds: string[]) => {
-      // Fetch subtopics for all selected topics first
-      if (selectedTopicIds.length > 0) {
-        dispatch(thunkFetchSubTopicsByTopic(selectedTopicIds));
-      }
       dispatch(setSelectedSubTopicIds(subTopicIds));
     },
-    [dispatch, selectedTopicIds],
+    [dispatch],
   );
 
   // Call this when subtopic dropdown is opened
@@ -325,6 +386,8 @@ export const useTestCreation = () => {
       name,
       type,
       selectedSubjectId,
+      selectedTopicIds,
+      selectedSubTopicIds,
       correctMarks,
       wrongMarks,
       unattemptMarks,

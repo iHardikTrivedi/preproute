@@ -5,7 +5,7 @@ import { COLORS } from "@/theme/colors";
 import type { TestStatus } from "../types/dashboard.types";
 
 interface TestStatusChipProps {
-  status: TestStatus;
+  status: TestStatus | null;
 }
 
 type StatusConfig = {
@@ -35,7 +35,7 @@ const STATUS_CONFIG: Record<TestStatus, StatusConfig> = {
 };
 
 const TestStatusChip = ({ status }: TestStatusChipProps) => {
-  const config = STATUS_CONFIG[status] ?? STATUS_CONFIG.draft;
+  const config = status ? STATUS_CONFIG[status] : STATUS_CONFIG.draft;
 
   return (
     <Chip
