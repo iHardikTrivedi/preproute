@@ -28,13 +28,7 @@ Developed as part of the **Preproute Frontend Developer Technical Assignment** f
 
 # 🚀 Live Demo
 
-> https://your-vercel-url.vercel.app
-
----
-
-# 🎥 Walkthrough Video
-
-> https://your-video-link.com
+> https://preproute-ten.vercel.app/
 
 ---
 
